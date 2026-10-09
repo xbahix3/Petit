@@ -40,7 +40,7 @@
         '</g>';
       return [
         '<rect width="800" height="600" fill="' + k.f('sky') + '"/>',
-        '<circle cx="680" cy="90" r="120" fill="' + k.f('sun') + '"/>',
+        '<circle class="a-glow" cx="680" cy="90" r="120" fill="' + k.f('sun') + '"/>',
         '<circle cx="680" cy="90" r="34" fill="#FFF8D2"/>',
         k.cloud(140, 90, 0.9), k.cloud(470, 70, 0.7), k.cloud(330, 140, 0.45),
         k.path('M0 430 C120 404 240 410 340 420 C460 432 560 404 680 408 C740 410 780 418 800 416 L800 480 L0 480 Z', 'fill="' + k.f('hill') + '"'),

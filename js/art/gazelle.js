@@ -40,7 +40,7 @@
       };
       return [
         '<rect width="800" height="600" fill="' + k.f('sky') + '"/>',
-        '<circle cx="640" cy="110" r="140" fill="' + k.f('sun') + '"/>',
+        '<circle class="a-glow" cx="640" cy="110" r="140" fill="' + k.f('sun') + '"/>',
         '<circle cx="640" cy="110" r="38" fill="#FFF8DA"/>',
         k.cloud(200, 90, 0.6), k.cloud(420, 60, 0.45),
         // far dunes with lit and shaded sides
@@ -121,8 +121,8 @@
 
       // neck + head
       g.push('<g class="a-nod" style="transform-origin:370px 300px">');
-      g.push(k.path(k.tube([[372, 312], [350, 262], [318, 214], [300, 196]], [84, 60, 44, 42]), 'fill="' + k.f('coat') + '"'));
-      g.push(k.path(k.tube([[352, 316], [334, 266], [306, 222]], [26, 18, 12]), 'fill="#FBF4E6" opacity="0.9"'));
+      g.push(k.path(k.tube([[374, 312], [350, 262], [318, 214], [300, 196]], [72, 54, 42, 40]), 'fill="' + k.f('coat') + '"'));
+      g.push(k.path(k.tube([[350, 318], [332, 268], [308, 226]], [18, 13, 9]), 'fill="#FBF4E6" opacity="0.9"'));
 
       // ---- les cornes (lyre-shaped, ringed)
       var hornA = [[290, 170], [292, 142], [302, 114], [314, 92], [316, 74], [310, 62]];

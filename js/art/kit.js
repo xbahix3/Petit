@@ -201,10 +201,11 @@
   // Soft cartoon cloud (flat bottom, puffy top, light shading underneath).
   function cloud(x, y, s, light, shade) {
     light = light || '#FFFFFF'; shade = shade || '#DCEFFA';
-    return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')">' +
+    var dur = 26 + Math.round((x * 7 + y * 3) % 18);
+    return '<g class="a-cloud" style="animation-duration:' + dur + 's"><g transform="translate(' + x + ' ' + y + ') scale(' + s + ')">' +
       '<path d="M-70 10 C-90 10 -92 -18 -66 -20 C-66 -46 -30 -52 -18 -34 C-10 -64 34 -66 42 -34 C58 -50 88 -38 80 -14 C100 -12 98 10 78 10 Z" fill="' + shade + '"/>' +
       '<path d="M-70 4 C-88 2 -86 -20 -64 -22 C-62 -46 -30 -52 -18 -36 C-8 -64 34 -66 42 -36 C58 -50 86 -38 78 -16 C96 -12 94 4 76 4 Z" fill="' + light + '"/>' +
-      '</g>';
+      '</g></g>';
   }
 
   // Linear / radial gradient helpers. stops: [[offset, color, opacity?], ...]

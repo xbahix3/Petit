@@ -413,6 +413,14 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 @keyframes waveL { to { transform: rotate(-12deg); } }
 @keyframes waveR { to { transform: rotate(12deg); } }
 
+/* living scenes */
+.art .a-cloud { animation: drift 30s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: translateX(-24px); } to { transform: translateX(28px); } }
+.art .a-glow { animation: glow 6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes glow { 50% { opacity: .78; transform: scale(1.04); } }
+.art .a-birds { animation: birds 14s ease-in-out infinite alternate; }
+@keyframes birds { from { transform: translate(-20px, 6px); } to { transform: translate(40px, -10px); } }
+
 /* Suri moods */
 .art-suri .mood { display: none; }
 .art-suri[data-mood="happy"] .m-happy, .art-suri[data-mood="cheer"] .m-cheer,

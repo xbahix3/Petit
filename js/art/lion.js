@@ -44,10 +44,10 @@
       };
       return [
         '<rect width="800" height="600" fill="' + k.f('sky') + '"/>',
-        '<circle cx="250" cy="235" r="330" fill="' + k.f('sun') + '"/>',
+        '<circle class="a-glow" cx="250" cy="235" r="330" fill="' + k.f('sun') + '"/>',
         '<circle cx="250" cy="235" r="120" fill="#FFF3CF" opacity="0.55"/>',
         // birds
-        '<g fill="none" stroke="#9A5B33" stroke-width="2.4" stroke-linecap="round" opacity="0.55">',
+        '<g class="a-birds" fill="none" stroke="#9A5B33" stroke-width="2.4" stroke-linecap="round" opacity="0.55">',
         k.path('M560 120 q9 -8 16 0 q7 -8 16 0'),
         k.path('M610 95 q7 -6 12 0 q5 -6 12 0'),
         k.path('M520 150 q6 -5 10 0 q5 -5 10 0'),

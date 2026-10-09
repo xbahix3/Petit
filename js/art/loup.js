@@ -60,7 +60,7 @@
       return [
         '<rect width="800" height="600" fill="' + k.f('sky') + '"/>',
         stars,
-        '<circle cx="170" cy="130" r="230" fill="' + k.f('moonGlow') + '"/>',
+        '<circle class="a-glow" cx="170" cy="130" r="230" fill="' + k.f('moonGlow') + '"/>',
         '<circle cx="170" cy="130" r="72" fill="' + k.f('moon') + '"/>',
         '<circle cx="146" cy="112" r="12" fill="#EADBB0" opacity="0.6"/><circle cx="190" cy="150" r="17" fill="#EADBB0" opacity="0.5"/><circle cx="186" cy="102" r="7" fill="#EADBB0" opacity="0.6"/>',
         k.path('M0 470 C120 440 260 452 400 446 C540 440 660 430 800 444 L800 600 L0 600 Z', 'fill="#2A3F63"'),
