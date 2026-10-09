@@ -240,7 +240,100 @@
   // Translate / scale point lists.
   function move(pts, dx, dy) { return pts.map(function (p) { return [p[0] + dx, p[1] + dy]; }); }
 
+  function clip(id, d) { return '<clipPath id="ID_' + id + '"><path d="' + d + '"/></clipPath>'; }
+
+  function inPoly(p, poly) {
+    var inside = false;
+    for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      var a = poly[i], b = poly[j];
+      if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < ((b[0] - a[0]) * (p[1] - a[1])) / (b[1] - a[1]) + a[0]) inside = !inside;
+    }
+    return inside;
+  }
+
+  // One tapered, slightly curved strand (hair lock, feather barb, fur tuft).
+  function strand(x, y, ang, len, w, curl) {
+    var dx = Math.cos(ang), dy = Math.sin(ang), nx = -dy, ny = dx;
+    var tx = x + dx * len + nx * curl, ty = y + dy * len + ny * curl;
+    var mx = x + dx * len * 0.5 + nx * curl * 0.6, my = y + dy * len * 0.5 + ny * curl * 0.6;
+    return 'M' + n(x + nx * w) + ' ' + n(y + ny * w) +
+      'Q' + n(mx + nx * w * 0.7) + ' ' + n(my + ny * w * 0.7) + ' ' + n(tx) + ' ' + n(ty) +
+      'Q' + n(mx - nx * w * 0.7) + ' ' + n(my - ny * w * 0.7) + ' ' + n(x - nx * w) + ' ' + n(y - ny * w) + 'Z';
+  }
+
+  // A long S-shaped, tapered lock of hair (widest near the root, pointed tip).
+  function lock(x, y, ang, len, w, curl) {
+    var dx = Math.cos(ang), dy = Math.sin(ang), nx = -dy, ny = dx;
+    function P(t, off) { return [x + dx * len * t + nx * off, y + dy * len * t + ny * off]; }
+    var m1 = P(0.35, curl * 0.5), m2 = P(0.7, -curl * 0.3), tip = P(1, curl * 0.15);
+    var a = P(0, w * 0.55), b = P(0, -w * 0.55);
+    return 'M' + pt(a) + 'C' + pt([m1[0] + nx * w, m1[1] + ny * w]) + ' ' + pt([m2[0] + nx * w * 0.5, m2[1] + ny * w * 0.5]) + ' ' + pt(tip) +
+      'C' + pt([m2[0] - nx * w * 0.5, m2[1] - ny * w * 0.5]) + ' ' + pt([m1[0] - nx * w, m1[1] - ny * w]) + ' ' + pt(b) + 'Z';
+  }
+
+  // Painterly mane / ruff: locks seeded on a grid inside a polygon, drawn from
+  // the far edge toward an origin so the locks near the origin sit on top.
+  // o: {poly, origin:[x,y], step, len, width, curl, angle(x,y), color(dist, rnd) -> fill, seed}
+  function mane(o) {
+    var r = rng(o.seed || 3), xs = o.poly.map(function (p) { return p[0]; }), ys = o.poly.map(function (p) { return p[1]; });
+    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+    var seeds = [];
+    for (var y = y0; y <= y1; y += o.step) {
+      for (var x = x0; x <= x1; x += o.step) {
+        var p = [x + (r() - 0.5) * o.step, y + (r() - 0.5) * o.step];
+        if (inPoly(p, o.poly)) seeds.push(p);
+      }
+    }
+    seeds.forEach(function (p) { p.d = Math.hypot(p[0] - o.origin[0], p[1] - o.origin[1]); p.r = r(); });
+    seeds.sort(function (a, b) { return b.d - a.d; });
+    return seeds.map(function (p) {
+      var a = o.angle(p[0], p[1]) + (p.r - 0.5) * 0.25;
+      var L = o.len * (0.75 + r() * 0.5), W = o.width * (0.75 + r() * 0.5), C = (r() - 0.5) * 2 * o.curl;
+      return '<path d="' + lock(p[0], p[1], a, L, W, C) + '" fill="' + o.color(p.d, p.r) + '"/>';
+    }).join('');
+  }
+
+  // Many strands scattered inside a polygon, following a direction field.
+  // o: {poly, count, len, width, curl, angle(x,y) -> radians, colors[], seed, opacity}
+  function strands(o) {
+    var r = rng(o.seed || 9), xs = o.poly.map(function (p) { return p[0]; }), ys = o.poly.map(function (p) { return p[1]; });
+    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+    var byColor = {}, made = 0, guard = 0;
+    while (made < o.count && guard++ < o.count * 20) {
+      var p = [x0 + r() * (x1 - x0), y0 + r() * (y1 - y0)];
+      if (!inPoly(p, o.poly)) continue;
+      var a = o.angle(p[0], p[1]) + (r() - 0.5) * (o.jitter === undefined ? 0.35 : o.jitter);
+      var L = o.len * (0.6 + r() * 0.7), W = (o.width || 2) * (0.7 + r() * 0.6);
+      var c = o.colors[Math.floor(r() * o.colors.length)];
+      (byColor[c] = byColor[c] || []).push(strand(p[0], p[1], a, L, W, (r() - 0.5) * (o.curl || 4) * 2));
+      made++;
+    }
+    return Object.keys(byColor).map(function (c) {
+      return '<path d="' + byColor[c].join('') + '" fill="' + c + '"' + (o.opacity !== undefined ? ' opacity="' + o.opacity + '"' : '') + '/>';
+    }).join('');
+  }
+
+  // Thin hair strokes (lines) inside a polygon, following a direction field.
+  function hairs(o) {
+    var r = rng(o.seed || 4), xs = o.poly.map(function (p) { return p[0]; }), ys = o.poly.map(function (p) { return p[1]; });
+    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+    var d = '', made = 0, guard = 0;
+    while (made < o.count && guard++ < o.count * 20) {
+      var p = [x0 + r() * (x1 - x0), y0 + r() * (y1 - y0)];
+      if (!inPoly(p, o.poly)) continue;
+      var a = o.angle(p[0], p[1]) + (r() - 0.5) * (o.jitter === undefined ? 0.3 : o.jitter);
+      var L = o.len * (0.6 + r() * 0.7), bend = (r() - 0.5) * L * 0.4;
+      var ex = p[0] + Math.cos(a) * L, ey = p[1] + Math.sin(a) * L;
+      var mx = (p[0] + ex) / 2 - Math.sin(a) * bend, my = (p[1] + ey) / 2 + Math.cos(a) * bend;
+      d += 'M' + n(p[0]) + ' ' + n(p[1]) + 'Q' + n(mx) + ' ' + n(my) + ' ' + n(ex) + ' ' + n(ey);
+      made++;
+    }
+    return '<path d="' + d + '" fill="none" stroke="' + o.color + '" stroke-width="' + (o.width || 1.4) +
+      '" stroke-linecap="round" opacity="' + (o.opacity === undefined ? 0.35 : o.opacity) + '"/>';
+  }
+
   PR.kit = {
+    clip: clip, inPoly: inPoly, strand: strand, strands: strands, hairs: hairs, lock: lock, mane: mane,
     rng: rng, smooth: smooth, tufts: tufts, grass: grass, fur: fur, tube: tube, cloud: cloud, voronoi: voronoi, inset: inset, seedsGrid: seedsGrid,
     lin: lin, linU: linU, rad: rad, radU: radU,
     path: path, shape: shape, line: line, f: f, mirror: mirror, move: move, n: n

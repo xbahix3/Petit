@@ -1,9 +1,19 @@
-/* Le lion — golden savanna at sunset.
+/* Le lion — an adult male, side view, yawning on the golden savanna at sunset.
    Parts: criniere, crocs, griffes, queue */
 (function () {
   'use strict';
   var PR = (window.PR = window.PR || {});
   PR.art = PR.art || {};
+
+  // ---- shapes (facing left, ground at y = 545) ----
+  var TORSO = [[300, 296], [350, 288], [420, 293], [500, 298], [570, 293], [620, 302], [648, 330], [655, 370], [640, 410], [600, 424], [540, 432], [470, 446], [400, 450], [340, 440], [300, 420], [280, 380], [282, 330]];
+  var HIND_NEAR = [[566, 316], [628, 318], [656, 352], [660, 404], [650, 446], [640, 474], [644, 504], [648, 530], [656, 545], [596, 547], [594, 533], [608, 520], [613, 494], [606, 470], [584, 450], [562, 424], [552, 384], [554, 344]];
+  var HIND_FAR = [[514, 330], [566, 336], [580, 392], [574, 432], [560, 462], [564, 494], [568, 528], [576, 545], [522, 546], [522, 532], [536, 518], [538, 492], [528, 462], [510, 424], [504, 380]];
+  var FRONT_FAR = [[318, 396], [362, 400], [364, 452], [356, 494], [360, 530], [366, 545], [312, 546], [310, 532], [322, 518], [326, 480], [322, 440]];
+  var MANE = [[170, 190], [188, 160], [226, 140], [276, 142], [322, 166], [356, 210], [382, 260], [394, 312], [390, 364], [372, 408], [340, 438], [298, 446], [266, 428], [246, 392], [232, 352], [220, 316], [214, 286], [206, 252], [190, 214]];
+  var HEAD = [[184, 190], [152, 182], [120, 188], [98, 197], [82, 205], [76, 220], [82, 236], [100, 246], [130, 255], [160, 265], [196, 283], [216, 270], [224, 244], [216, 212], [200, 196]];
+  var JAW = [[198, 284], [178, 302], [152, 318], [126, 333], [106, 341], [96, 331], [104, 318], [130, 306], [156, 294], [184, 282]];
+  var MOUTH = [[88, 238], [116, 250], [152, 262], [192, 281], [180, 287], [154, 298], [128, 310], [104, 319], [92, 290]];
 
   PR.art.lion = {
     viewBox: '0 0 800 600',
@@ -15,23 +25,25 @@
         k.linU('hill1', 0, 380, 0, 460, [[0, '#EDB97A'], [1, '#E3A964']]),
         k.linU('hill2', 0, 410, 0, 470, [[0, '#DFA059'], [1, '#D6944C']]),
         k.linU('ground', 0, 440, 0, 600, [[0, '#E2B057'], [0.5, '#D9A04A'], [1, '#C7883A']]),
-        k.linU('body', 0, 250, 0, 440, [[0, '#EDB35C'], [0.55, '#E4A24B'], [1, '#F3D093']]),
-        k.linU('bodyFar', 0, 300, 0, 540, [[0, '#D39A4C'], [1, '#C88D40']]),
-        k.linU('leg', 0, 330, 0, 540, [[0, '#E6A44D'], [0.7, '#EDBA6A'], [1, '#F2CD8C']]),
-        k.radU('mane1', 240, 262, 185, [[0, '#7A3010'], [0.6, '#A2481A'], [1, '#BF6326']]),
-        k.radU('mane2', 240, 262, 150, [[0, '#B5561C'], [0.65, '#CF7029'], [1, '#E08A36']]),
-        k.radU('mane3', 238, 250, 125, [[0, '#D27A2E'], [0.7, '#E9A044'], [1, '#F6BE62']]),
-        k.radU('face', 222, 205, 150, [[0, '#F8D287'], [0.55, '#ECB15A'], [1, '#D38A3C']]),
-        k.linU('muzzle', 0, 282, 0, 322, [[0, '#FFF3D8'], [1, '#F2DCAE']]),
-        k.linU('chin', 0, 340, 0, 384, [[0, '#F6E2B8'], [1, '#E8C994']]),
-        k.linU('mouth', 0, 305, 0, 360, [[0, '#2E0A0D'], [1, '#6E1E24']]),
-        k.linU('fang', 0, 300, 0, 345, [[0, '#FFFFFF'], [1, '#EBDDBF']]),
-        k.linU('nose', 0, 256, 0, 290, [[0, '#9A5844'], [0.4, '#6E3122'], [1, '#4E2016']]),
-        k.radU('iris', 0, 0, 1, [[0, '#FFE07A'], [0.6, '#F0A622'], [1, '#B86A0E']]),
-        k.linU('tail', 650, 300, 760, 210, [[0, '#E3A04A'], [1, '#D89443']]),
-        k.radU('tuft', 744, 198, 34, [[0, '#4A1C08'], [0.7, '#7A3412'], [1, '#9E4A1C']]),
-        k.linU('claw', 0, 520, 0, 548, [[0, '#FFFDF6'], [1, '#E3D5B6']]),
-        '<clipPath id="ID_rimClip"><rect x="0" y="0" width="800" height="215"/></clipPath>'
+        // coat
+        k.linU('coat', 0, 285, 0, 455, [[0, '#D69C55'], [0.45, '#CB914D'], [0.8, '#D9AC70'], [1, '#E7C793']]),
+        k.linU('coatFar', 0, 330, 0, 548, [[0, '#B5814A'], [1, '#A47142']]),
+        k.linU('leg', 0, 320, 0, 548, [[0, '#CD934F'], [0.6, '#D5A464'], [1, '#E0BC86']]),
+        k.linU('legShade', 620, 0, 660, 0, [[0, '#000', 0], [1, '#5A3416', 0.35]]),
+        k.radU('mane', 220, 240, 200, [[0, '#B47634'], [0.45, '#87501F'], [1, '#55301A']]),
+        k.linU('face', 0, 180, 0, 285, [[0, '#D9A35C'], [0.6, '#CC944E'], [1, '#BD8545']]),
+        k.linU('jaw', 0, 280, 0, 342, [[0, '#C38A4A'], [0.55, '#D9B07A'], [1, '#EBD4A6']]),
+        k.linU('mouth', 0, 236, 0, 316, [[0, '#4A1418'], [1, '#7A2A30']]),
+        k.linU('tooth', 0, 0, 0, 1, [[0, '#FFFDF5'], [1, '#E7D9BB']]),
+        k.linU('claw', 0, 0, 0, 1, [[0, '#F7F0DE'], [1, '#C9B48E']]),
+        k.linU('tail', 0, 330, 0, 520, [[0, '#C99254'], [1, '#B17C42']]),
+        k.rad('dark', 0.5, 0.5, 0.5, [[0, '#5A3214', 0.5], [0.6, '#5A3214', 0.22], [1, '#5A3214', 0]]),
+        k.rad('light', 0.5, 0.5, 0.5, [[0, '#FFE6B4', 0.6], [0.6, '#FFE6B4', 0.25], [1, '#FFE6B4', 0]]),
+        k.clip('cTorso', k.smooth(TORSO)),
+        k.clip('cHind', k.smooth(HIND_NEAR)),
+        k.clip('cMane', k.smooth(MANE)),
+        k.clip('cHead', k.smooth(HEAD)),
+        '<clipPath id="ID_rimClip"><rect x="0" y="0" width="800" height="236"/></clipPath>'
       ].join('');
     },
 
@@ -67,184 +79,159 @@
 
     animal: function (k) {
       var g = [];
-      // ground shadow
-      g.push('<ellipse cx="480" cy="542" rx="240" ry="16" fill="#7A4A1A" opacity="0.35" filter="' + k.f('blur6') + '"/>');
+      var down = function () { return Math.PI / 2; };
+      g.push('<ellipse cx="470" cy="547" rx="230" ry="13" fill="#6E4318" opacity="0.38" filter="' + k.f('blur6') + '"/>');
 
       // ---- la queue (behind the body)
-      g.push('<g data-part="queue" class="a-tail" style="transform-origin:658px 310px">');
-      g.push(k.line([[650, 312], [690, 338], [724, 336], [746, 306], [752, 270], [748, 240]], 'fill="none" stroke="' + k.f('tail') + '" stroke-width="15" stroke-linecap="round"'));
-      g.push(k.line([[656, 320], [692, 344], [726, 342]], 'fill="none" stroke="#C98636" stroke-width="5" stroke-linecap="round" opacity="0.45"'));
-      g.push(k.shape([[740, 252], [731, 230], [733, 206], [741, 186], [747, 200], [756, 182], [762, 204], [761, 230], [753, 252]], 'fill="' + k.f('tuft') + '"', 0.9));
-      g.push(k.line([[744, 236], [742, 212], [746, 196]], 'fill="none" stroke="#B5592A" stroke-width="2" stroke-linecap="round" opacity="0.6"'));
-      g.push('<circle class="hit" cx="738" cy="252" r="46" fill="transparent"/>');
-      g.push('<circle class="hit" cx="702" cy="334" r="30" fill="transparent"/>');
+      g.push('<g data-part="queue" class="a-tail" style="transform-origin:640px 332px">');
+      g.push(k.path(k.tube([[636, 330], [666, 368], [682, 418], [690, 466], [700, 500]], [17, 14, 12, 10, 9]), 'fill="' + k.f('tail') + '"'));
+      g.push(k.line([[640, 336], [668, 372], [684, 420], [692, 466]], 'fill="none" stroke="#E6C38E" stroke-width="3" stroke-linecap="round" opacity="0.5"'));
+      // the black tuft at the end
+      g.push(k.shape([[694, 494], [710, 494], [722, 514], [720, 538], [708, 552], [696, 542], [690, 518]], 'fill="#3B2414"'));
+      g.push(k.strands({ poly: [[692, 498], [714, 498], [720, 540], [700, 548]], count: 22, len: 18, width: 2.2, curl: 3, seed: 61, angle: function () { return Math.PI / 2 + 0.15; }, colors: ['#2A170B', '#5A3820'], opacity: 0.9 }));
+      g.push('<circle class="hit" cx="700" cy="500" r="42" fill="transparent"/>');
+      g.push('<circle class="hit" cx="672" cy="400" r="30" fill="transparent"/>');
       g.push('</g>');
 
-      // ---- far legs (shaded, behind the body)
-      g.push(k.shape([[540, 370], [586, 366], [596, 420], [588, 470], [590, 512], [600, 536], [552, 538], [548, 512], [556, 470], [548, 420]], 'fill="' + k.f('bodyFar') + '"'));
-      g.push(k.shape([[372, 360], [420, 362], [424, 420], [416, 470], [418, 512], [428, 536], [382, 538], [380, 512], [386, 470], [376, 420]], 'fill="' + k.f('bodyFar') + '"'));
+      // ---- far legs (in shadow)
+      g.push(k.shape(HIND_FAR, 'fill="' + k.f('coatFar') + '"'));
+      g.push(k.shape(FRONT_FAR, 'fill="' + k.f('coatFar') + '"'));
+      g.push('<ellipse cx="549" cy="540" rx="27" ry="8" fill="#8A5C30"/><ellipse cx="338" cy="540" rx="28" ry="8" fill="#8A5C30"/>');
+      g.push('<ellipse cx="556" cy="420" rx="22" ry="70" fill="' + k.f('dark') + '" opacity="0.6"/><ellipse cx="350" cy="470" rx="14" ry="60" fill="' + k.f('dark') + '" opacity="0.5"/>');
 
       // ---- body
-      g.push('<g class="a-breathe" style="transform-origin:500px 420px">');
-      g.push(k.shape([[330, 272], [400, 256], [480, 264], [560, 256], [628, 266], [666, 300], [670, 346], [650, 388], [600, 410], [520, 416], [440, 412], [384, 402], [338, 372], [318, 322]], 'fill="' + k.f('body') + '"'));
-      g.push(k.shape([[604, 298], [650, 292], [670, 340], [660, 384], [620, 406], [566, 414], [606, 372]], 'fill="#C47F2E" opacity="0.26"'));
-      g.push(k.shape([[404, 388], [480, 400], [560, 398], [520, 416], [440, 412]], 'fill="#C47F2E" opacity="0.18"'));
-      // sunset rim light along the back
-      g.push(k.line([[372, 262], [470, 266], [560, 258], [626, 270], [656, 292]], 'fill="none" stroke="#FFE7B0" stroke-width="6" stroke-linecap="round" opacity="0.55"'));
+      g.push(k.shape(TORSO, 'fill="' + k.f('coat') + '"'));
+      g.push('<g clip-path="url(#ID_cTorso)">');
+      var soft = function (cx, cy, rx, ry, kind, op) { return '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" fill="' + k.f(kind) + '"' + (op ? ' opacity="' + op + '"' : '') + '/>'; };
+      g.push(soft(450, 462, 190, 46, 'dark'));
+      g.push(soft(388, 370, 70, 100, 'dark', 0.8));
+      g.push(soft(548, 386, 42, 80, 'dark', 0.8));
+      g.push(soft(470, 312, 160, 26, 'light'));
+      g.push(soft(446, 362, 76, 44, 'light', 0.6));
+      g.push(soft(500, 405, 60, 22, 'dark', 0.5));
+      g.push(k.hairs({ poly: TORSO, count: 90, len: 10, color: '#8C5A2A', width: 1.1, opacity: 0.18, seed: 5, angle: function (x, y) { return Math.PI * 0.62 + (y - 360) * 0.002; } }));
+      g.push(k.hairs({ poly: TORSO, count: 60, len: 10, color: '#F3D7A3', width: 1.1, opacity: 0.25, seed: 6, angle: function () { return Math.PI * 0.6; } }));
       g.push('</g>');
+      g.push(k.line([[352, 290], [430, 294], [500, 299], [572, 294], [622, 303], [648, 328]], 'fill="none" stroke="#FFE1A6" stroke-width="4" stroke-linecap="round" opacity="0.55"'));
 
       // ---- near hind leg
-      g.push(k.shape([[566, 300], [622, 292], [666, 322], [672, 380], [660, 430], [652, 470], [650, 506], [662, 530], [604, 534], [600, 516], [614, 500], [612, 470], [598, 428], [560, 376]], 'fill="' + k.f('leg') + '"'));
-      g.push(k.line([[590, 326], [634, 316], [660, 346]], 'fill="none" stroke="#C47F2E" stroke-width="4" stroke-linecap="round" opacity="0.35"'));
-      g.push(k.line([[598, 430], [616, 470], [614, 500]], 'fill="none" stroke="#FFE2A6" stroke-width="3" stroke-linecap="round" opacity="0.4"'));
-      // ---- near front leg
-      g.push(k.shape([[332, 340], [392, 352], [398, 420], [388, 470], [386, 506], [384, 530], [314, 533], [308, 516], [328, 500], [338, 468], [330, 420]], 'fill="' + k.f('leg') + '"'));
-      g.push(k.line([[392, 400], [386, 440], [376, 476]], 'fill="none" stroke="#C47F2E" stroke-width="3.5" stroke-linecap="round" opacity="0.35"'));
+      g.push(k.shape(HIND_NEAR, 'fill="' + k.f('leg') + '"'));
+      g.push('<g clip-path="url(#ID_cHind)">');
+      g.push(soft(652, 420, 30, 110, 'dark'));
+      g.push(soft(596, 360, 44, 52, 'light', 0.8));
+      g.push(soft(574, 446, 24, 34, 'dark', 0.6));
+      g.push(soft(640, 500, 16, 50, 'dark', 0.7));
+      g.push(k.hairs({ poly: HIND_NEAR, count: 40, len: 9, color: '#8C5A2A', width: 1.1, opacity: 0.18, seed: 8, angle: function (x, y) { return y < 450 ? Math.PI * 0.55 : Math.PI / 2; } }));
+      g.push('</g>');
+      g.push(k.shape([[594, 528], [652, 528], [660, 547], [590, 548]], 'fill="#D2A066"'));
+      g.push(k.shape([[600, 530], [646, 530], [652, 538], [598, 538]], 'fill="#E2BC86" opacity="0.7"'));
+      g.push('<g stroke="#A0703C" stroke-width="2" stroke-linecap="round" opacity="0.7">' + k.path('M612 536 l0 10') + k.path('M626 536 l0 10') + k.path('M640 536 l0 10') + '</g>');
 
-      // paws: rounded top, four toes facing the viewer
-      function paw(cx, cy, w) {
-        var h = w * 0.36, x0 = cx - w / 2, tw = w / 4;
-        var d = 'M' + x0 + ' ' + (cy + h * 0.5) +
-          ' C' + (x0 - 2) + ' ' + (cy - h * 0.4) + ' ' + (cx - w * 0.3) + ' ' + (cy - h * 0.9) + ' ' + cx + ' ' + (cy - h * 0.9) +
-          ' C' + (cx + w * 0.3) + ' ' + (cy - h * 0.9) + ' ' + (x0 + w + 2) + ' ' + (cy - h * 0.4) + ' ' + (x0 + w) + ' ' + (cy + h * 0.5);
-        for (var i = 3; i >= 0; i--) {
-          d += ' Q' + (x0 + tw * i + tw / 2) + ' ' + (cy + h * 1.15) + ' ' + (x0 + tw * i) + ' ' + (cy + h * 0.5);
-        }
-        var out = k.path(d + 'Z', 'fill="#F3D095"');
-        for (var j = 1; j < 4; j++) {
-          out += k.path('M' + (x0 + tw * j) + ' ' + (cy + h * 0.5) + ' L' + (x0 + tw * j) + ' ' + (cy + h * 0.05), 'stroke="#C08240" stroke-width="2.2" stroke-linecap="round" opacity="0.7"');
-        }
-        return out;
-      }
-      g.push(paw(349, 524, 72));
-      g.push(paw(632, 524, 64));
+      // ---- near front leg, lifted (paw forward, claws out)
+      var arm = [[334, 372], [350, 438], [304, 474], [268, 494]];
+      g.push(k.path(k.tube(arm, [92, 74, 58, 52]), 'fill="' + k.f('leg') + '"'));
+      g.push(k.line([[350, 400], [350, 440], [318, 470]], 'fill="none" stroke="#8A5626" stroke-width="5" stroke-linecap="round" opacity="0.35"'));
+      g.push(k.line([[318, 446], [290, 468], [266, 480]], 'fill="none" stroke="#F2D29E" stroke-width="4" stroke-linecap="round" opacity="0.45"'));
+      // paw, seen from the front-side, toes spread
+      var PAW = [[282, 474], [274, 506], [256, 528], [230, 534], [208, 524], [202, 502], [212, 482], [238, 470], [262, 466]];
+      g.push(k.shape(PAW, 'fill="#D6A86C"'));
+      g.push(k.shape([[270, 480], [262, 500], [246, 514], [228, 520], [218, 508], [226, 488], [246, 478]], 'fill="#E6C48E" opacity="0.7"'));
+      g.push(k.shape([[262, 486], [256, 506], [240, 518], [226, 516], [236, 500], [248, 488]], 'fill="#C99A62" opacity="0.6"'));
+      g.push('<g fill="none" stroke="#9A6A36" stroke-width="2" stroke-linecap="round" opacity="0.7">' + k.path('M246 528 q-4 -12 2 -24') + k.path('M226 532 q-6 -12 -2 -26') + k.path('M210 518 q-2 -12 6 -22') + '</g>');
 
-      // ---- les griffes (claws curving out of each toe)
+      // ---- les griffes
       g.push('<g data-part="griffes">');
-      function claws(cx, cy, w) {
-        var out = '', h = w * 0.36, x0 = cx - w / 2, tw = w / 4;
-        for (var i = 0; i < 4; i++) {
-          var x = x0 + tw * i + tw / 2, y = cy + h * 0.78;
-          var lean = (i - 1.5) * 2.2;
-          out += k.path('M' + (x - 4.5) + ' ' + (y - 3) +
-            ' C' + (x - 5) + ' ' + (y + 6) + ' ' + (x - 3 + lean) + ' ' + (y + 12) + ' ' + (x - 7 + lean * 1.6) + ' ' + (y + 17) +
-            ' C' + (x + 2 + lean) + ' ' + (y + 14) + ' ' + (x + 5) + ' ' + (y + 6) + ' ' + (x + 4.5) + ' ' + (y - 3) + ' Z',
-            'fill="' + k.f('claw') + '" stroke="#A8916A" stroke-width="1.1"');
-        }
-        return out;
-      }
-      g.push(claws(349, 524, 72));
-      g.push(claws(632, 524, 64));
-      g.push('<rect class="hit" x="298" y="500" width="104" height="60" rx="22" fill="transparent"/>');
-      g.push('<rect class="hit" x="586" y="500" width="94" height="60" rx="22" fill="transparent"/>');
-      g.push('</g>');
-
-      // ---- head (gentle nod)
-      g.push('<g class="a-nod" style="transform-origin:300px 330px">');
-
-      // ---- la crinière
-      var maneA = k.tufts({ cx: 242, cy: 266, r1: 150, r2: 182, n: 26, seed: 11, curl: 0.45, jitter: 0.12, round: 0.9 });
-      g.push('<g data-part="criniere">');
-      g.push(k.path(maneA, 'fill="' + k.f('mane1') + '"'));
-      g.push('<path d="' + maneA + '" fill="none" stroke="#FFE1A6" stroke-width="5" opacity="0.65" clip-path="url(#ID_rimClip)"/>');
-      // locks: flame-shaped strands in rings, alternating direction
-      var locks = function (r0, r1, n, seed, curlDir, fill, w) {
-        var rr = k.rng(seed), out = '';
-        for (var i = 0; i < n; i++) {
-          var a = (i / n) * Math.PI * 2 + rr() * 0.12;
-          var lr = r1 * (0.9 + rr() * 0.16);
-          var bx = 240 + Math.cos(a) * r0, by = 262 + Math.sin(a) * r0;
-          var tx = 240 + Math.cos(a + curlDir * 0.2) * lr, ty = 262 + Math.sin(a + curlDir * 0.2) * lr;
-          var nx = -Math.sin(a), ny = Math.cos(a);
-          var mx = (bx + tx) / 2 + nx * curlDir * 10, my = (by + ty) / 2 + ny * curlDir * 10;
-          out += k.path('M' + k.n(bx - nx * w) + ' ' + k.n(by - ny * w) +
-            ' Q' + k.n(mx - nx * w * 0.9) + ' ' + k.n(my - ny * w * 0.9) + ' ' + k.n(tx) + ' ' + k.n(ty) +
-            ' Q' + k.n(mx + nx * w * 0.9) + ' ' + k.n(my + ny * w * 0.9) + ' ' + k.n(bx + nx * w) + ' ' + k.n(by + ny * w) + ' Z', 'fill="' + fill + '"');
-        }
-        return out;
+      var claw = function (x, y, ang, len) {
+        // a curved hook: sharp tip curving down
+        var a = ang * Math.PI / 180, dx = Math.cos(a), dy = Math.sin(a), nx = -dy, ny = dx;
+        var tip = [x + dx * len + nx * len * 0.45, y + dy * len + ny * len * 0.45];
+        return k.path('M' + k.n(x + nx * 4.5) + ' ' + k.n(y + ny * 4.5) +
+          ' Q' + k.n(x + dx * len * 0.7 + nx * 5) + ' ' + k.n(y + dy * len * 0.7 + ny * 5) + ' ' + k.n(tip[0]) + ' ' + k.n(tip[1]) +
+          ' Q' + k.n(x + dx * len * 0.55 - nx * 1) + ' ' + k.n(y + dy * len * 0.55 - ny * 1) + ' ' + k.n(x - nx * 4.5) + ' ' + k.n(y - ny * 4.5) + ' Z',
+          'fill="' + k.f('claw') + '" stroke="#8C7350" stroke-width="1"');
       };
-      g.push(locks(110, 176, 24, 41, 1, '#A8501E', 13));
-      g.push(locks(96, 158, 22, 42, -1, '#C8692A', 13));
-      g.push(k.path(k.tufts({ cx: 240, cy: 260, r1: 112, r2: 142, n: 20, seed: 5, curl: -0.4, jitter: 0.14, round: 0.9 }), 'fill="' + k.f('mane2') + '"'));
-      g.push(locks(90, 140, 20, 43, 1, '#E79A42', 11));
-      g.push(k.path(k.tufts({ cx: 238, cy: 256, r1: 96, r2: 120, n: 16, seed: 9, curl: 0.4, jitter: 0.16, round: 0.9 }), 'fill="' + k.f('mane3') + '"'));
-      g.push(k.fur({ cx: 238, cy: 258, rx: 112, ry: 112, count: 46, len: 16, radial: true, twist: -0.3, seed: 17, color: '#FFDDA0', width: 2, opacity: 0.45 }));
-      g.push('<circle class="hit" cx="240" cy="258" r="166" fill="transparent"/>');
+      g.push(claw(254, 528, 118, 20));
+      g.push(claw(234, 534, 132, 21));
+      g.push(claw(214, 524, 148, 20));
+      g.push(claw(203, 505, 166, 18));
+      g.push('<ellipse class="hit" cx="236" cy="512" rx="48" ry="36" fill="transparent"/>');
       g.push('</g>');
 
-      // ears
-      [[176, 178, -1], [300, 178, 1]].forEach(function (e) {
-        g.push('<ellipse cx="' + e[0] + '" cy="' + e[1] + '" rx="26" ry="24" fill="#DC9A48"/>');
-        g.push('<ellipse cx="' + (e[0] - e[2] * 1) + '" cy="' + (e[1] + 3) + '" rx="15" ry="14" fill="#8C4A22"/>');
-        g.push('<ellipse cx="' + (e[0] - e[2] * 1) + '" cy="' + (e[1] + 7) + '" rx="9" ry="7" fill="#F2C987" opacity="0.7"/>');
-      });
+      // ---- la crinière (head, neck, shoulders, chest)
+      g.push('<g data-part="criniere">');
+      // hair grows back from the face and falls down with gravity
+      var maneDir = function (x, y) {
+        var t = Math.max(0, Math.min(1, (y - 150) / 270));
+        var back = 0.18 + 1.42 * t;                    // top: flows backward, chest: falls down
+        if (x < 215 && y < 230) back = 0.35;           // forehead fringe
+        return back;
+      };
+      var MANE_OUT = [[164, 192], [180, 154], [222, 130], [282, 132], [334, 160], [370, 208], [398, 262], [410, 318], [404, 374], [384, 422], [346, 456], [296, 462], [262, 440], [300, 420], [352, 380], [362, 300], [330, 220], [270, 168], [210, 170]];
+      var maneColor = function (d, rnd) {
+        var dark = ['#4A2914', '#55301A', '#5F361C'], mid = ['#7C4A22', '#8C5627', '#9C632D'], gold = ['#B97B38', '#C98C43', '#D9A257'];
+        var set = d < 85 ? gold : d < 150 ? mid : dark;
+        if (rnd > 0.86) set = d < 150 ? gold : mid;             // a few lighter locks catch the sun
+        return set[Math.floor(rnd * 997) % 3];
+      };
+      g.push(k.shape(MANE, 'fill="' + k.f('mane') + '"'));
+      g.push(k.mane({ poly: MANE, origin: [178, 236], step: 15, len: 58, width: 9, curl: 9, seed: 71, angle: maneDir, color: maneColor }));
+      // crown: shorter locks combed back over the top of the head
+      g.push(k.mane({ poly: [[176, 188], [196, 154], [236, 136], [282, 140], [300, 168], [250, 172], [212, 186]], origin: [150, 200], step: 11, len: 44, width: 8, curl: 6, seed: 77,
+        angle: function (x) { return 0.05 + (x - 180) * 0.002; }, color: function (d, rnd) { return ['#8C5627', '#9C632D', '#B97B38', '#7C4A22'][Math.floor(rnd * 4)]; } }));
+      g.push('<g clip-path="url(#ID_cMane)">');
+      g.push(k.hairs({ poly: MANE, count: 220, len: 30, color: '#F0C27A', width: 1.1, opacity: 0.3, seed: 75, angle: maneDir }));
+      g.push(k.hairs({ poly: MANE, count: 160, len: 30, color: '#2E1709', width: 1.1, opacity: 0.25, seed: 76, angle: maneDir }));
+      g.push('</g>');
+      g.push('<path class="hit" d="' + k.smooth(MANE_OUT) + '" fill="transparent"/>');
+      g.push('</g>');
 
-      // face
-      g.push(k.shape([[238, 150], [280, 156], [308, 182], [320, 222], [324, 264], [314, 304], [292, 334], [268, 352], [238, 360], [208, 352], [184, 334], [162, 304], [152, 264], [156, 222], [168, 182], [196, 156]], 'fill="' + k.f('face') + '"'));
-      // cheek fluff
-      g.push(k.path(k.tufts({ cx: 238, cy: 280, r1: 70, r2: 92, n: 7, seed: 31, start: 2.15, end: 3.35, curl: 0.4, sx: 1.05, jitter: 0.2 }), 'fill="#F3C779" opacity="0.9"'));
-      g.push(k.path(k.tufts({ cx: 238, cy: 280, r1: 70, r2: 92, n: 7, seed: 32, start: -0.2, end: 1.0, curl: -0.4, sx: 1.05, jitter: 0.2 }), 'fill="#F3C779" opacity="0.9"'));
-      // nose bridge light
-      g.push(k.shape([[226, 176], [250, 176], [254, 230], [248, 262], [228, 262], [222, 230]], 'fill="#FBDDA0" opacity="0.6"'));
-      // eye shadows
-      g.push('<ellipse cx="205" cy="234" rx="24" ry="15" fill="#C98439" opacity="0.3"/>');
-      g.push('<ellipse cx="271" cy="234" rx="24" ry="15" fill="#C98439" opacity="0.3"/>');
+      // ---- head (yawning)
+      g.push('<g class="a-nod" style="transform-origin:230px 300px">');
+      // ear (black-backed, rounded)
+      g.push(k.shape([[190, 192], [194, 168], [210, 158], [224, 168], [222, 190]], 'fill="#B07A3C"'));
+      g.push(k.shape([[196, 188], [200, 172], [212, 166], [218, 178], [214, 190]], 'fill="#5A3416"'));
+      // lower jaw, then the open mouth, then the upper head on top
+      g.push(k.shape(JAW, 'fill="' + k.f('jaw') + '"'));
+      g.push(k.shape(MOUTH, 'fill="' + k.f('mouth') + '"', 0.8));
+      g.push(k.shape([[106, 316], [130, 305], [158, 294], [182, 286], [174, 296], [148, 308], [122, 318]], 'fill="#D46A72"'));
+      g.push(k.line([[114, 313], [144, 302], [170, 292]], 'fill="none" stroke="#F29AA2" stroke-width="2.5" stroke-linecap="round" opacity="0.8"'));
+      g.push(k.line([[96, 300], [92, 272], [94, 248]], 'fill="none" stroke="#2A0C0F" stroke-width="5" stroke-linecap="round" opacity="0.5"'));
 
-      // chin + mouth
-      g.push(k.shape([[198, 336], [238, 340], [278, 336], [272, 366], [238, 386], [204, 366]], 'fill="' + k.f('chin') + '"'));
-      g.push(k.shape([[194, 306], [216, 318], [238, 313], [260, 318], [282, 306], [276, 332], [258, 352], [238, 358], [218, 352], [200, 332]], 'fill="' + k.f('mouth') + '"', 0.8));
-      g.push('<ellipse cx="238" cy="346" rx="20" ry="9" fill="#E26F7B"/>');
-      g.push('<ellipse cx="232" cy="343" rx="7" ry="3" fill="#F49AA3" opacity="0.8"/>');
-
-      // ---- les crocs
+      // ---- les crocs (upper and lower canines + small incisors)
       g.push('<g data-part="crocs">');
-      function fang(x, y, dir, len) {
-        // dir 1 = points down, -1 = points up
-        return k.path('M' + (x - 8) + ' ' + y + ' Q' + (x - 6) + ' ' + (y + dir * len * 0.7) + ' ' + (x + 1) + ' ' + (y + dir * len) +
-          ' Q' + (x + 5) + ' ' + (y + dir * len * 0.55) + ' ' + (x + 8) + ' ' + y + ' Z', 'fill="' + k.f('fang') + '" stroke="#C8B48C" stroke-width="1"');
-      }
-      g.push(fang(214, 310, 1, 32));
-      g.push(fang(262, 310, 1, 32));
-      g.push(fang(220, 354, -1, 20));
-      g.push(fang(256, 354, -1, 20));
-      g.push('<ellipse class="hit" cx="238" cy="334" rx="52" ry="36" fill="transparent"/>');
+      var fang = function (x, y, dir, len, lean) {
+        return k.path('M' + (x - 6) + ' ' + y + ' Q' + (x - 5 + lean * 0.3) + ' ' + (y + dir * len * 0.65) + ' ' + (x + lean) + ' ' + (y + dir * len) +
+          ' Q' + (x + 5 + lean * 0.4) + ' ' + (y + dir * len * 0.5) + ' ' + (x + 6) + ' ' + y + ' Z', 'fill="' + k.f('tooth') + '" stroke="#B9A57E" stroke-width="1"');
+      };
+      g.push(fang(104, 242, 1, 31, 3));
+      g.push(fang(120, 316, -1, 25, -2));
+      g.push('<g fill="#F6EEDC" stroke="#C9B48E" stroke-width="0.8">' + k.path('M90 238 l4 9 l4 -7 Z') + k.path('M97 318 l3 -7 l4 6 Z') + k.path('M140 257 l4 8 l4 -5 Z') + k.path('M148 302 l4 -7 l5 5 Z') + k.path('M160 266 l4 7 l4 -5 Z') + '</g>');
+      g.push('<ellipse class="hit" cx="122" cy="282" rx="46" ry="48" fill="transparent"/>');
       g.push('</g>');
 
-      // muzzle (upper lip lobes)
-      g.push('<ellipse cx="216" cy="300" rx="27" ry="20" fill="' + k.f('muzzle') + '"/>');
-      g.push('<ellipse cx="260" cy="300" rx="27" ry="20" fill="' + k.f('muzzle') + '"/>');
-      [[204, 296], [212, 304], [200, 306], [272, 296], [264, 304], [276, 306]].forEach(function (d) {
-        g.push('<circle cx="' + d[0] + '" cy="' + d[1] + '" r="1.8" fill="#A0683A"/>');
-      });
-      g.push('<g stroke="#FFF8E8" stroke-width="1.4" stroke-linecap="round" opacity="0.8" fill="none">' +
-        k.path('M196 300 Q170 292 146 296') + k.path('M196 306 Q172 306 150 314') +
-        k.path('M280 300 Q306 292 330 296') + k.path('M280 306 Q304 306 326 314') + '</g>');
-
-      // nose
-      g.push(k.shape([[216, 264], [238, 258], [260, 264], [256, 276], [244, 288], [238, 291], [232, 288], [220, 276]], 'fill="' + k.f('nose') + '"', 0.7));
-      g.push('<ellipse cx="232" cy="265" rx="9" ry="3.5" fill="#C58A72" opacity="0.7"/>');
-      g.push(k.path('M238 290 L238 300', 'stroke="#4E2016" stroke-width="2.5" stroke-linecap="round"'));
-
-      // eyes
-      function eye(cx, flip) {
-        var s = flip ? -1 : 1;
-        var pts = [[cx - 17 * s, 236], [cx - 9 * s, 225], [cx + 5 * s, 223], [cx + 16 * s, 230], [cx + 8 * s, 241], [cx - 6 * s, 243]];
-        var out = k.shape(pts, 'fill="#FFF6E2"', 0.8);
-        out += '<circle cx="' + (cx + 1 * s) + '" cy="233" r="9" fill="' + k.f('iris') + '"/>';
-        out += '<circle cx="' + (cx + 1 * s) + '" cy="233" r="4.6" fill="#24140A"/>';
-        out += '<circle cx="' + (cx + 3 * s) + '" cy="229.5" r="2.6" fill="#fff"/>';
-        out += k.shape(pts, 'fill="none" stroke="#3A1E0C" stroke-width="2.6"', 0.8);
-        // blinking lid
-        out += '<g class="a-blink" style="transform-origin:' + cx + 'px 222px;transform:scaleY(0)">' +
-          k.shape([[cx - 19 * s, 236], [cx - 10 * s, 222], [cx + 6 * s, 220], [cx + 18 * s, 229], [cx + 10 * s, 244], [cx - 8 * s, 246]], 'fill="#E9AE58"', 0.8) + '</g>';
-        // brow
-        out += k.line([[cx - 18 * s, 218], [cx - 4 * s, 211], [cx + 14 * s, 214]], 'fill="none" stroke="#9A5524" stroke-width="4" stroke-linecap="round" opacity="0.8"');
-        return out;
-      }
-      g.push(eye(206, false));
-      g.push(eye(270, true));
-      g.push('</g>'); // end head
-
+      g.push(k.shape(HEAD, 'fill="' + k.f('face') + '"'));
+      g.push('<g clip-path="url(#ID_cHead)">');
+      // cheek and brow shading, muzzle light
+      g.push(k.shape([[160, 230], [206, 232], [222, 262], [196, 284], [150, 262]], 'fill="#8A5626" opacity="0.25"'));
+      g.push(k.shape([[80, 222], [108, 216], [140, 228], [152, 250], [116, 250], [86, 238]], 'fill="#F0D7A8" opacity="0.85"'));
+      g.push(k.shape([[104, 194], [150, 184], [182, 190], [150, 198], [116, 204]], 'fill="#F2CF92" opacity="0.5"'));
+      g.push(k.shape([[118, 214], [150, 210], [176, 220], [150, 226]], 'fill="#9A6430" opacity="0.22"'));
+      g.push(k.hairs({ poly: HEAD, count: 60, len: 9, color: '#8C5A2A', width: 1.1, opacity: 0.35, seed: 9, angle: function () { return -0.1; } }));
+      g.push('</g>');
+      // black lip line and whisker dots
+      g.push(k.line([[86, 238], [114, 250], [150, 262], [190, 280]], 'fill="none" stroke="#2E1A12" stroke-width="2.6" stroke-linecap="round"'));
+      g.push('<g fill="#5A3A22">' + [[96, 228], [106, 231], [116, 235], [100, 236], [110, 240], [122, 241]].map(function (d) { return '<circle cx="' + d[0] + '" cy="' + d[1] + '" r="1.6"/>'; }).join('') + '</g>');
+      g.push('<g fill="none" stroke="#FFF8E8" stroke-width="1.2" stroke-linecap="round" opacity="0.75">' + k.path('M102 230 Q72 220 46 222') + k.path('M106 235 Q76 236 50 246') + k.path('M112 240 Q86 248 64 264') + '</g>');
+      // nose (rhinarium)
+      g.push(k.shape([[78, 204], [92, 200], [102, 207], [98, 220], [84, 225], [76, 216]], 'fill="#5E3A30"', 0.7));
+      g.push(k.shape([[80, 204], [92, 201], [99, 206], [88, 209]], 'fill="#A87262" opacity="0.8"', 0.7));
+      // eye squeezed shut in the yawn
+      g.push(k.line([[128, 212], [140, 216], [154, 214]], 'fill="none" stroke="#2A170B" stroke-width="3" stroke-linecap="round"'));
+      g.push(k.line([[126, 207], [141, 204], [156, 207]], 'fill="none" stroke="#E8C68C" stroke-width="2.5" stroke-linecap="round" opacity="0.8"'));
+      g.push(k.line([[130, 219], [141, 222], [152, 220]], 'fill="none" stroke="#F0D7A8" stroke-width="2" stroke-linecap="round" opacity="0.7"'));
+      // brow
+      g.push(k.line([[122, 200], [142, 195], [162, 199]], 'fill="none" stroke="#9A6430" stroke-width="3" stroke-linecap="round" opacity="0.6"'));
+      g.push('</g>');
       return g.join('');
     }
   };
