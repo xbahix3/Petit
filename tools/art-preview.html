@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Aperçu des dessins</title>
+<style>
+  html, body { margin: 0; background: #222; }
+  #stage { width: 800px; height: 600px; }
+  #stage svg { width: 100%; height: 100%; display: block; }
+  .still * { animation: none !important; }
+  .art-suri .mood { display: none; }
+  .art-suri[data-mood="happy"] .m-happy, .art-suri[data-mood="cheer"] .m-cheer,
+  .art-suri[data-mood="encourage"] .m-encourage, .art-suri[data-mood="think"] .m-think { display: inline; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="../js/art/kit.js"></script>
+<script src="../js/art/build.js"></script>
+<script src="../js/art/lion.js"></script>
+<script src="../js/art/gazelle.js"></script>
+<script src="../js/art/elephant.js"></script>
+<script src="../js/art/girafe.js"></script>
+<script src="../js/art/loup.js"></script>
+<script src="../js/art/perruche.js"></script>
+<script src="../js/art/suri.js"></script>
+<script>
+  var q = new URLSearchParams(location.search);
+  var name = q.get('a') || 'lion';
+  var stage = document.getElementById('stage');
+  stage.innerHTML = PR.svg(name, { scene: q.get('scene') !== '0', still: true, viewBox: q.get('vb') || undefined });
+  stage.querySelector('svg').setAttribute('data-mood', q.get('mood') || 'happy');
+  var lit = q.get('lit');
+  if (lit) {
+    var svg = stage.querySelector('svg');
+    var pre = svg.getAttribute('data-prefix');
+    svg.querySelectorAll('[data-part="' + lit + '"]').forEach(function (g) {
+      g.setAttribute('filter', 'url(#' + pre + '_glow)');
+    });
+  }
+  if (q.get('hits')) {
+    document.querySelectorAll('[data-part]').forEach(function (g) {
+      g.querySelectorAll('.hit').forEach(function (h) { h.setAttribute('fill', 'rgba(0,120,255,.35)'); });
+    });
+  }
+  window.PARTS = PR.svgParts(name);
+</script>
+</body>
+</html>
