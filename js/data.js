@@ -16,7 +16,7 @@
     },
     {
       id: 'gazelle', name: 'la gazelle', of: 'de la gazelle', ar: 'الغزال',
-      cry: 'La gazelle bêle.',
+      cry: 'La gazelle est très discrète : on l\'entend à peine !',
       fact: 'La gazelle court très vite. Elle vit aussi dans le désert algérien !',
       portrait: '180 40 230 230'
     },
@@ -28,7 +28,7 @@
     },
     {
       id: 'girafe', name: 'la girafe', of: 'de la girafe', ar: 'الزرافة',
-      cry: 'La girafe souffle doucement.',
+      cry: 'La girafe est très silencieuse. La nuit, elle fredonne tout doucement.',
       fact: 'La girafe est l\'animal le plus grand du monde. Sa langue est très longue !',
       portrait: '100 30 250 250'
     },
@@ -40,7 +40,7 @@
     },
     {
       id: 'perruche', name: 'la perruche', of: 'de la perruche', ar: 'الببغاء الصغير',
-      cry: 'La perruche gazouille.',
+      cry: 'La perruche siffle et gazouille.',
       fact: 'La perruche est un oiseau qui aime parler et chanter avec ses amies.',
       portrait: '220 100 300 300'
     }
@@ -50,30 +50,30 @@
   // anchor: where the discovery hotspot sits (viewBox units, 800 x 600)
   // zoom:   close-up viewBox showing just that part
   var cards = [
-    ['lion', 'criniere', 'la crinière', 'اللبدة', 'لبدة الأسد', [118, 300], '40 70 400 300'],
-    ['lion', 'crocs', 'les crocs', 'الأنياب', 'أنياب الأسد', [238, 334], '168 272 140 105'],
-    ['lion', 'griffes', 'les griffes', 'المخالب', 'مخالب الأسد', [349, 542], '284 470 130 98'],
-    ['lion', 'queue', 'la queue', 'الذيل', 'ذيل الأسد', [748, 214], '620 160 180 135'],
+    ['lion', 'criniere', 'la crinière', 'اللبدة', 'لبدة الأسد', [118, 300], '50 90 230 230'],
+    ['lion', 'crocs', 'les crocs', 'الأنياب', 'أنياب الأسد', [238, 334], '183 279 110 110'],
+    ['lion', 'griffes', 'les griffes', 'المخالب', 'مخالب الأسد', [349, 542], '296 480 108 108'],
+    ['lion', 'queue', 'la queue', 'الذيل', 'ذيل الأسد', [748, 214], '650 170 150 150'],
 
-    ['gazelle', 'cornes', 'les cornes', 'القرنان', 'قرنا الغزال', [314, 86], '238 40 150 113'],
-    ['gazelle', 'sabots', 'les sabots', 'الحوافر', 'حوافر الغزال', [398, 538], '344 476 110 83'],
-    ['gazelle', 'pattes', 'les pattes', 'القوائم', 'قوائم الغزال', [384, 470], '330 300 330 248'],
+    ['gazelle', 'cornes', 'les cornes', 'القرنان', 'قرنا الغزال', [314, 86], '258 44 116 116'],
+    ['gazelle', 'sabots', 'les sabots', 'الحوافر', 'حوافر الغزال', [398, 538], '352 486 96 96'],
+    ['gazelle', 'pattes', 'les pattes', 'القوائم', 'قوائم الغزال', [384, 470], '340 352 300 300'],
 
-    ['elephant', 'trompe', 'la trompe', 'الخرطوم', 'خرطوم الفيل', [244, 404], '140 250 230 173'],
-    ['elephant', 'defenses', 'les défenses', 'النابان', 'نابا الفيل', [208, 380], '170 296 170 128'],
-    ['elephant', 'oreilles', 'les oreilles', 'الأذنان', 'أذنا الفيل', [96, 250], '30 110 450 338'],
+    ['elephant', 'trompe', 'la trompe', 'الخرطوم', 'خرطوم الفيل', [232, 446], '160 300 160 160'],
+    ['elephant', 'defenses', 'les défenses', 'النابان', 'نابا الفيل', [300, 398], '190 296 130 130'],
+    ['elephant', 'oreilles', 'les oreilles', 'الأذنان', 'أذنا الفيل', [96, 250], '36 126 200 200'],
 
-    ['girafe', 'cou', 'le cou', 'العنق', 'عنق الزرافة', [338, 232], '200 90 280 210'],
-    ['girafe', 'taches', 'les taches', 'البقع', 'بقع الزرافة', [520, 350], '360 250 300 225'],
-    ['girafe', 'langue', 'la langue', 'اللسان', 'لسان الزرافة', [128, 122], '84 66 132 99'],
+    ['girafe', 'cou', 'le cou', 'العنق', 'عنق الزرافة', [338, 232], '240 120 210 210'],
+    ['girafe', 'taches', 'les taches', 'البقع', 'بقع الزرافة', [520, 350], '450 270 150 150'],
+    ['girafe', 'langue', 'la langue', 'اللسان', 'لسان الزرافة', [128, 122], '100 76 96 96'],
 
-    ['loup', 'museau', 'le museau', 'الخطم', 'خطم الذئب', [284, 120], '214 60 160 120'],
-    ['loup', 'oreilles', 'les oreilles', 'الأذنان', 'أذنا الذئب', [410, 106], '340 56 140 105'],
-    ['loup', 'fourrure', 'la fourrure', 'الفرو', 'فرو الذئب', [540, 430], '360 190 320 240'],
+    ['loup', 'museau', 'le museau', 'الخطم', 'خطم الذئب', [284, 120], '222 64 136 136'],
+    ['loup', 'oreilles', 'les oreilles', 'الأذنان', 'أذنا الذئب', [410, 106], '346 52 136 136'],
+    ['loup', 'fourrure', 'la fourrure', 'الفرو', 'فرو الذئب', [540, 430], '440 300 190 190'],
 
-    ['perruche', 'bec', 'le bec', 'المنقار', 'منقار الببغاء الصغير', [282, 226], '226 160 120 90'],
-    ['perruche', 'ailes', 'les ailes', 'الجناحان', 'جناحا الببغاء الصغير', [534, 262], '370 150 260 195'],
-    ['perruche', 'plumes', 'les plumes', 'الريش', 'ريش الببغاء الصغير', [372, 360], '250 110 360 270']
+    ['perruche', 'bec', 'le bec', 'المنقار', 'منقار الببغاء الصغير', [282, 226], '240 172 96 96'],
+    ['perruche', 'ailes', 'les ailes', 'الجناحان', 'جناحا الببغاء الصغير', [534, 262], '404 170 216 216'],
+    ['perruche', 'plumes', 'les plumes', 'الريش', 'ريش الببغاء الصغير', [372, 360], '296 292 136 136']
   ].map(function (c) {
     var a = animals.filter(function (x) { return x.id === c[0]; })[0];
     return {

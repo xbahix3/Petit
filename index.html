@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Le Petit Ranger</title>
+<meta name="description" content="Jeu éducatif : les animaux sauvages et les parties de leur corps, pour la 5e année primaire.">
+<meta name="theme-color" content="#2E9E6A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar" hidden>
+    <button class="icon-btn" id="btn-home" type="button" aria-label="Retour au camp"></button>
+    <div class="title"></div>
+    <div class="progress" aria-hidden="true"></div>
+    <button class="icon-btn" id="btn-ar" type="button" aria-label="Aide en arabe" aria-pressed="false"><span class="ar-glyph" lang="ar">ع</span></button>
+    <button class="icon-btn" id="btn-sound" type="button" aria-label="Son"></button>
+  </header>
+  <main id="screen"></main>
+</div>
+<div class="suri-dock" hidden><div class="suri-fig"></div></div>
+<noscript><p style="padding:20px;font-size:20px">Ce jeu a besoin de JavaScript pour fonctionner.</p></noscript>
+
+<script src="js/core.js"></script>
+<script src="js/data.js"></script>
+<script src="js/check.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/sounds.js"></script>
+<script src="js/voices.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/art/kit.js"></script>
+<script src="js/art/build.js"></script>
+<script src="js/art/lion.js"></script>
+<script src="js/art/gazelle.js"></script>
+<script src="js/art/elephant.js"></script>
+<script src="js/art/girafe.js"></script>
+<script src="js/art/loup.js"></script>
+<script src="js/art/perruche.js"></script>
+<script src="js/art/suri.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/screens-main.js"></script>
+<script src="js/games.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

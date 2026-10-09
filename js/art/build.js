@@ -55,9 +55,9 @@
     var cls = 'art art-' + name + (opts.cls ? ' ' + opts.cls : '') + (opts.still ? ' still' : '');
     var label = opts.title ? '<title>' + opts.title + '</title>' : '';
     var body = '<defs>' + p.defs + '</defs>' + scene +
-      '<g class="animal">' + p.animal + '</g>' + front;
+      (opts.animal === false ? '' : '<g class="animal">' + p.animal + '</g>') + front;
     return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb + '" class="' + cls +
-      '" data-prefix="' + id + '" role="img" preserveAspectRatio="xMidYMid meet">' + label + body + '</svg>')
+      '" data-prefix="' + id + '" role="img" preserveAspectRatio="' + (opts.cover ? 'xMidYMid slice' : 'xMidYMid meet') + '">' + label + body + '</svg>')
       .replace(/ID_/g, id + '_');
   };
 
