@@ -23,6 +23,13 @@ window.PR.sounds = {
     author: 'domaine public (mis en ligne par Duk)',
     license: 'Domaine public'
   },
+  girafe: {
+    file: 'audio/animals/girafe.mp3',
+    title: 'Giraffe snort.oga + Giraffe Hum.oga',
+    page: 'https://commons.wikimedia.org/wiki/File:Giraffe_Hum.oga',
+    author: 'Anton Baotic, Florian Sicks, Angela S. Stoeger',
+    license: 'CC BY-SA 4.0'
+  },
   perruche: {
     file: 'audio/animals/perruche.mp3',
     title: 'XC924266 — Budgerigar (Melopsittacus undulatus)',

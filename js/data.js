@@ -28,7 +28,7 @@
     },
     {
       id: 'girafe', name: 'la girafe', of: 'de la girafe', ar: 'الزرافة',
-      cry: 'La girafe est très silencieuse. La nuit, elle fredonne tout doucement.',
+      cry: 'La girafe est très discrète : elle souffle par le nez et, la nuit, elle fredonne tout doucement.',
       fact: 'La girafe est l\'animal le plus grand du monde. Sa langue est très longue !',
       portrait: '960 0 300 300'
     },

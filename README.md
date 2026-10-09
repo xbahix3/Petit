@@ -61,12 +61,13 @@ The vocabulary, Arabic translations and fun facts live in `js/data.js`.
 | Lion roar | [Lionroar.wav](https://commons.wikimedia.org/wiki/File:Lionroar.wav), J. Growcott et al. | CC BY 4.0 |
 | Elephant trumpet | [Elephant voice - trumpeting.ogg](https://commons.wikimedia.org/wiki/File:Elephant_voice_-_trumpeting.ogg), Info-farmer | CC0 |
 | Wolf howls | [Wolf howls.ogg](https://commons.wikimedia.org/wiki/File:Wolf_howls.ogg) | Public domain |
+| Giraffe snort and night hum | [Giraffe snort.oga](https://commons.wikimedia.org/wiki/File:Giraffe_snort.oga), [Giraffe Hum.oga](https://commons.wikimedia.org/wiki/File:Giraffe_Hum.oga), A. Baotic, F. Sicks, A. S. Stoeger | CC BY-SA 4.0 |
 | Budgerigar flock | [XC924266](https://xeno-canto.org/924266), Louis Masarei | CC BY-NC-SA 4.0 |
 | French voice | Piper "siwis" voice, trained on the SIWIS corpus (University of Edinburgh) | CC BY 4.0 |
 | Feedback chimes | Synthesised in the browser (`js/audio.js`) | — |
 
 No freely licensed recording of a gazelle was found, so the gazelle has no call and is
-left out of the "Qui fait ce bruit ?" quiz. The giraffe call is pending.
+left out of the "Qui fait ce bruit ?" quiz.
 
 Animal paintings: made for this game with ChatGPT's image model.
 
