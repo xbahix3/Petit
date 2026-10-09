@@ -12,7 +12,26 @@ const { chromium } = require(process.env.PW_PATH || 'playwright');
   page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
   const base = process.env.BASE;
   let n = 0;
-  const shot = async (name) => { const f = path.join(outDir, `${w}_${String(++n).padStart(2, '0')}_${name}.png`); await page.screenshot({ path: f }); console.log(f); };
+  // French typography: narrow no-break space before ? ! ;  no-break space before :  curly apostrophes
+  const typo = async (where) => {
+    const bad = await page.evaluate(() => {
+      const out = [];
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      let node;
+      while ((node = walker.nextNode())) {
+        const el = node.parentElement;
+        if (!el || el.closest('[lang="ar"], script, style, title') || !el.offsetParent && getComputedStyle(el).position !== 'fixed') continue;
+        const t = node.textContent;
+        if (/[^\u202F?!]\s*[?!;]/.test(t) && /(^|[^\u202F?!])[?!;]/.test(t)) out.push('space before ?!; -> ' + JSON.stringify(t));
+        if (/(^|[^\u00A0]):/.test(t) && !/https?:/.test(t)) out.push('space before : -> ' + JSON.stringify(t));
+        if (/'/.test(t)) out.push('straight apostrophe -> ' + JSON.stringify(t));
+      }
+      return out;
+    });
+    bad.forEach((b) => typoErrors.add(where + ': ' + b));
+  };
+  const typoErrors = new Set();
+  const shot = async (name) => { await typo(name); const f = path.join(outDir, `${w}_${String(++n).padStart(2, '0')}_${name}.png`); await page.screenshot({ path: f }); console.log(f); };
   // click the visible centre of a part (or of another part)
   const tapPart = (part, other) => page.evaluate(([part, other]) => {
     const svg = document.querySelector('.scene-card svg');
@@ -116,6 +135,14 @@ const { chromium } = require(process.env.PW_PATH || 'playwright');
   await page.waitForTimeout(2200);
   await shot('memory-finish');
 
+  for (const hash of ['', '#/home', '#/discover', '#/credits']) { await page.goto(base + hash); await page.waitForTimeout(500); await typo(hash || 'title'); }
+  for (const a of ['lion', 'gazelle', 'elephant', 'girafe', 'loup', 'perruche']) {
+    await page.goto(base + '#/animal/' + a); await page.waitForTimeout(400); await typo(a);
+    const spots = await page.$$('.hotspot');
+    for (const s of spots) { await s.click({ force: true }); await page.waitForTimeout(150); await typo(a + '-part'); }
+  }
+  console.log(typoErrors.size ? 'TYPOGRAPHY:\n' + [...typoErrors].join('\n') : 'typography ok');
   console.log(errors.length ? 'ERRORS:\n' + [...new Set(errors)].join('\n') : 'no errors');
+  process.exitCode = typoErrors.size || errors.length ? 1 : 0;
   await browser.close();
 })();
