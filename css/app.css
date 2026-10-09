@@ -199,7 +199,7 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 
 /* ---------- Scene (animal picture) ---------- */
 .scene-wrap { position: relative; }
-.scene-card { position: relative; aspect-ratio: 4 / 3; width: min(100%, calc((var(--free-h) - 10px) * 4 / 3)); margin: 0 auto; border-radius: 26px; overflow: hidden; box-shadow: var(--shadow); background: #E9D9B8; border: 5px solid #fff; touch-action: manipulation; }
+.scene-card { position: relative; aspect-ratio: 3 / 2; width: min(100%, calc((var(--free-h) - 10px) * 3 / 2)); margin: 0 auto; border-radius: 26px; overflow: hidden; box-shadow: var(--shadow); background: #E9D9B8; border: 5px solid #fff; touch-action: manipulation; }
 .scene-card svg.art { width: 100%; height: 100%; display: block; cursor: pointer; }
 .prompt {
   position: absolute; left: 0; right: 0; top: 12px; margin: 0 auto; width: max-content; z-index: 4;
@@ -413,6 +413,23 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 @keyframes waveL { to { transform: rotate(-12deg); } }
 @keyframes waveR { to { transform: rotate(12deg); } }
 
+/* painted plates */
+.focus-ring { position: absolute; z-index: 3; pointer-events: none; border-radius: 50%; border: 4px dashed rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 4px rgba(245, 165, 36, 0.55), 0 0 24px rgba(255, 216, 74, 0.8); animation: ringPulse 1.6s ease-in-out infinite; }
+@keyframes ringPulse { 50% { transform: scale(1.06); box-shadow: 0 0 0 7px rgba(245, 165, 36, 0.35), 0 0 34px rgba(255, 216, 74, 0.9); } }
+.plate .hl { pointer-events: none; }
+.plate .hl.pulse { animation: hlPulse 1.5s ease-in-out infinite; }
+@keyframes hlPulse { 50% { opacity: .55; } }
+.plate .animal { animation: plateIn .7s cubic-bezier(.2, .9, .3, 1.1) backwards; }
+@keyframes plateIn { from { opacity: 0; transform: translateX(-40px); } }
+.plate.act .paint, .plate.act .hl { animation: actHop .55s ease-in-out 2; }
+@keyframes actHop { 50% { transform: translateY(-22px); } }
+.art-elephant.act .paint, .art-loup.act .paint, .art-lion.act .paint { animation: actRoar .3s ease-in-out 5 alternate; }
+@keyframes actRoar { from { transform: rotate(-0.6deg); } to { transform: rotate(0.6deg) translateY(-6px); } }
+.plate .paint, .plate .hl { transform-box: view-box; transform-origin: 50% 90%; }
+.info .detail { width: 160px; aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 5px solid #fff; box-shadow: 0 0 0 4px var(--sun), var(--shadow); }
+.info .detail svg { width: 100%; height: 100%; display: block; }
+
 /* living scenes */
 .art .a-cloud { animation: drift 30s ease-in-out infinite alternate; }
 @keyframes drift { from { transform: translateX(-24px); } to { transform: translateX(28px); } }
@@ -478,7 +495,7 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
   .game-cols { grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); }
   .spell-panel { margin-top: 0; }
   .quiz-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); gap: 22px; align-items: center; justify-content: center; width: 100%; }
-  .quiz-body .scene-card { width: min(100%, calc((var(--free-h) - 110px) * 4 / 3)); }
+  .quiz-body .scene-card { width: min(100%, calc((var(--free-h) - 110px) * 3 / 2)); }
   .quiz-body .choices { grid-template-columns: 1fr; }
   .quiz-body .choice { flex-direction: row; justify-content: flex-start; text-align: left; padding: 8px 14px; }
   .quiz-body .choice .pic { width: 84px; flex: none; }

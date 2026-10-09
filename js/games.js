@@ -135,6 +135,7 @@
       PR.progress(TOTAL, Math.min(i, TOTAL));
       var scene = PR.Scene(c.animal);
       scene.light(c.part, 'glow');
+      var ring = scene.focus(c);
       var cols = el('div.game-cols', scene.el);
       root.appendChild(cols);
 
@@ -217,6 +218,7 @@
         panel.appendChild(nextBtn('Continuer', next));
         panel.lastChild.focus({ preventScroll: true });
 
+        ring.remove();
         scene.light(c.part, r.ok ? 'good' : 'soft');
         var pos = scene.anchor(c);
         scene.label(c.word, pos[0], pos[1] - 4, r.ok ? 'good' : 'soft');
@@ -319,6 +321,7 @@
         var c2 = q.card;
         var scene = PR.Scene(c2.animal);
         scene.light(c2.part, 'glow');
+        scene.focus(c2);
         box.appendChild(el('div.quiz-q', { text: 'Comment s\'appelle cette partie ?' }));
         box.appendChild(PR.arLine(PR.ar.quizName));
         body.appendChild(scene.el);

@@ -28,7 +28,7 @@
       onclick: function () { PR.audio.unlock(); PR.audio.sfx('pop'); PR.go('home'); }
     });
     root.appendChild(el('div.title-screen',
-      el('div.title-bg', { html: PR.svg('lion', { animal: false, cover: true }) }),
+      el('div.title-bg', { html: PR.svg('savanna', { animal: false, cover: true }) }),
       el('div.logo',
         el('span.leaf.l', { html: PR.icons.leaf }), el('span.leaf.r', { html: PR.icons.leaf }),
         el('div.badge', el('span.small', { text: 'Le Petit' }), el('span.big', { text: 'Ranger' }))),
@@ -138,6 +138,7 @@
       spots[c.id].innerHTML = PR.icons.check;
 
       info.textContent = '';
+      if (c.detail) info.appendChild(el('div.detail', { html: PR.zoomSVG(c) }));
       info.appendChild(PR.wordEl(c.word));
       info.appendChild(PR.arLine(c.ar, 'word-ar'));
       info.appendChild(el('div.phrase', { text: PR.cestPhrase(c) }));
@@ -202,7 +203,7 @@
       el('h2', { text: 'Polices' }),
       el('p', { text: 'Fredoka, Andika et Noto Naskh Arabic — licence SIL Open Font License.' }),
       el('h2', { text: 'Dessins et jeu' }),
-      el('p', { text: 'Tous les dessins sont faits en code (SVG), pour la classe de 5e année primaire.' })
+      el('p', { text: 'Peintures des animaux créées pour ce jeu avec le modèle d\'images de ChatGPT. Suri et le décor du titre sont dessinés en code (SVG).' })
     ));
   };
 })();

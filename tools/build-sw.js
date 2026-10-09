@@ -2,7 +2,7 @@
 // Run after changing any asset: node tools/build-sw.js
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const root = path.resolve(__dirname, '..');
-const include = ['index.html', 'manifest.webmanifest', 'css', 'js', 'fonts', 'audio', 'icons'];
+const include = ['index.html', 'manifest.webmanifest', 'css', 'js', 'fonts', 'audio', 'icons', 'img'];
 const files = [];
 (function walk(rel) {
   const abs = path.join(root, rel);

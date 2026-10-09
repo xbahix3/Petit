@@ -40,7 +40,8 @@ const { chromium } = require(process.env.PW_PATH || 'playwright');
       for (const shape of [...g.querySelectorAll('*')].filter((e) => e.getBBox)) {
         const r = shape.getBoundingClientRect();
         if (r.width < 4 || r.height < 4) continue;
-        for (const [fx, fy] of [[0.5, 0.5], [0.3, 0.5], [0.7, 0.5], [0.5, 0.3], [0.5, 0.7]]) {
+        const pts = [[0.5, 0.5]]; for (let i = 1; i < 10; i++) for (let j = 1; j < 10; j++) pts.push([i / 10, j / 10]);
+        for (const [fx, fy] of pts) {
           const x = r.left + r.width * fx, y = r.top + r.height * fy;
           const hit = document.elementFromPoint(x, y);
           const p = hit && hit.closest && hit.closest('[data-part]');

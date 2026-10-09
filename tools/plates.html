@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Zones des planches</title>
+<style>
+  body { margin: 0; background: #333; }
+  .row { display: grid; grid-template-columns: repeat(2, 760px); gap: 8px; padding: 8px; }
+  .cell { position: relative; width: 760px; }
+  .cell svg { width: 100%; display: block; }
+  .cell .hit { fill: rgba(0, 140, 255, .28) !important; stroke: rgba(0, 90, 255, .6) !important; }
+  .dot { position: absolute; width: 14px; height: 14px; margin: -7px; border-radius: 50%; background: #ff2d55; border: 2px solid #fff; }
+  .tag { position: absolute; font: 12px sans-serif; background: #fff; padding: 1px 4px; border-radius: 4px; transform: translate(8px, -50%); }
+</style></head>
+<body><div class="row" id="row"></div>
+<script src="../js/core.js"></script><script src="../js/data.js"></script>
+<script src="../js/art/kit.js"></script><script src="../js/art/build.js"></script><script src="../js/art/plates.js"></script>
+<script>
+  // Shows every traced zone (blue) and hotspot anchor (red) on each plate.
+  // ?lit=lion:criniere shows one highlight instead.
+  Object.keys(PR.plates).forEach(function (k) { PR.plates[k].img = '../' + PR.plates[k].img; });
+  var q = new URLSearchParams(location.search), row = document.getElementById('row');
+  var lit = (q.get('lit') || '').split(':');
+  PR.data.animals.forEach(function (a) {
+    var cell = document.createElement('div'); cell.className = 'cell';
+    cell.innerHTML = PR.svg(a.id, {});
+    row.appendChild(cell);
+    var svg = cell.querySelector('svg');
+    if (lit[0] === a.id) {
+      svg.querySelectorAll('.hit').forEach(function (h) { h.classList.remove('hit'); });
+      var l = svg.querySelector('[data-hl="' + lit[1] + '"]');
+      l.style.display = ''; l.querySelector('image').setAttribute('filter', 'url(#' + svg.dataset.prefix + '_t-' + (lit[2] || 'glow') + ')');
+    }
+    PR.data.cardsOf(a.id).forEach(function (c) {
+      var d = document.createElement('div'); d.className = 'dot';
+      d.style.left = (c.anchor[0] / 1536 * 100) + '%'; d.style.top = (c.anchor[1] / 1024 * 100) + '%';
+      var t = document.createElement('div'); t.className = 'tag'; t.textContent = c.part;
+      t.style.left = d.style.left; t.style.top = d.style.top;
+      cell.appendChild(d); cell.appendChild(t);
+    });
+  });
+</script></body></html>

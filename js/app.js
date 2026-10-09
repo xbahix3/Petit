@@ -14,7 +14,7 @@
     var name = bits[0] || 'title', arg = bits[1];
     if (!PR.screens[name]) name = 'title';
     if (PR.currentOverlay) { PR.currentOverlay.remove(); PR.currentOverlay = null; }
-    Array.prototype.forEach.call(document.querySelectorAll('.overlay'), function (o) { o.remove(); });
+    Array.prototype.forEach.call(document.querySelectorAll('.overlay, canvas.fx-layer, .spark'), function (o) { o.remove(); });
     PR.audio.stopAll();
     root.textContent = '';
     root.className = '';

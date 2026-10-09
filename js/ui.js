@@ -96,27 +96,45 @@
     card.innerHTML = PR.svg(animalId, { title: PR.fr(a.name) });
     var svg = card.querySelector('svg');
     var pre = svg.getAttribute('data-prefix');
+    var dims = PR.plateDims(animalId);
     var labelEl = null, actTimer;
 
-    function groups(part) {
-      return svg.querySelectorAll('[data-part="' + part + '"],[data-alt="' + part + '"]');
-    }
     var api = {
       el: wrap, card: card, svg: svg, animal: a,
+      // light up a part: kind = 'glow' (gold, pulsing), 'good' (green), 'soft' (coral) or null
       light: function (part, kind) {
-        Array.prototype.forEach.call(groups(part), function (g) {
-          if (kind) g.setAttribute('filter', 'url(#' + pre + '_' + kind + ')');
-          else g.removeAttribute('filter');
-        });
+        var layer = svg.querySelector('[data-hl="' + part + '"]');
+        if (!layer) return;
+        if (kind) {
+          layer.querySelector('image').setAttribute('filter', 'url(#' + pre + '_t-' + kind + ')');
+          layer.style.display = '';
+          layer.classList.toggle('pulse', kind === 'glow');
+        } else {
+          layer.style.display = 'none';
+        }
       },
       clear: function () {
-        Array.prototype.forEach.call(svg.querySelectorAll('[filter]'), function (g) {
-          if (g.hasAttribute('data-part') || g.hasAttribute('data-alt')) g.removeAttribute('filter');
-        });
+        Array.prototype.forEach.call(svg.querySelectorAll('[data-hl]'), function (g) { g.style.display = 'none'; });
         if (labelEl) { labelEl.remove(); labelEl = null; }
       },
+      // a pulsing ring around a part, so even small parts are easy to spot
+      focus: function (c) {
+        var S = PR.plates[c.animal].parts[c.part], xs = [], ys = [];
+        S.hit.forEach(function (poly) { poly.forEach(function (q) { xs.push(q[0]); ys.push(q[1]); }); });
+        var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+        var ring = el('div.focus-ring');
+        // big parts are obvious from their glow alone
+        if (x1 - x0 > dims[0] * 0.35 || y1 - y0 > dims[1] * 0.45) return ring;
+        var padX = Math.max(30, (x1 - x0) * 0.12), padY = Math.max(30, (y1 - y0) * 0.12);
+        ring.style.left = ((x0 - padX) / dims[0] * 100) + '%';
+        ring.style.top = ((y0 - padY) / dims[1] * 100) + '%';
+        ring.style.width = ((x1 - x0 + 2 * padX) / dims[0] * 100) + '%';
+        ring.style.height = ((y1 - y0 + 2 * padY) / dims[1] * 100) + '%';
+        card.appendChild(ring);
+        return ring;
+      },
       // position (in % of the card) of a card's anchor
-      anchor: function (c) { return [c.anchor[0] / 8, c.anchor[1] / 6]; },
+      anchor: function (c) { return [c.anchor[0] / dims[0] * 100, c.anchor[1] / dims[1] * 100]; },
       label: function (text, xPct, yPct, kind) {
         if (labelEl) labelEl.remove();
         // near the top (under the question bubble) the label goes below the point
@@ -159,10 +177,10 @@
 
   // Close-up of one part, for quiz and memory cards.
   PR.zoomSVG = function (c) {
-    return PR.svg(c.animal, { viewBox: c.zoom, cls: 'zoom' });
+    return PR.svg(c.detail || c.animal, { viewBox: c.zoom, cls: 'zoom', hits: false });
   };
   PR.portraitSVG = function (animalId) {
-    return PR.svg(animalId, { viewBox: PR.data.animal(animalId).portrait, cls: 'portrait' });
+    return PR.svg(animalId, { viewBox: PR.data.animal(animalId).portrait, cls: 'portrait', hits: false });
   };
 
   /* ---------------- effects ---------------- */
