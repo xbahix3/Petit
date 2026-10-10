@@ -87,7 +87,67 @@
     };
   });
 
+  /* ---------- sentences: avoir + un / une / des ---------- */
+  // what each animal « a » (indefinite article), one per card
+  var INDEF = {
+    'lion-criniere': 'une crinière', 'lion-crocs': 'des crocs', 'lion-griffes': 'des griffes', 'lion-queue': 'une queue',
+    'gazelle-cornes': 'des cornes', 'gazelle-sabots': 'des sabots', 'gazelle-pattes': 'des pattes fines',
+    'elephant-trompe': 'une trompe', 'elephant-defenses': 'des défenses', 'elephant-oreilles': 'des oreilles immenses',
+    'girafe-cou': 'un long cou', 'girafe-taches': 'des taches', 'girafe-queue': 'une queue',
+    'loup-museau': 'un long museau', 'loup-oreilles': 'des oreilles', 'loup-fourrure': 'une fourrure épaisse', 'loup-crocs': 'des crocs',
+    'perruche-bec': 'un bec', 'perruche-ailes': 'des ailes', 'perruche-plumes': 'des plumes'
+  };
+  cards.forEach(function (c) {
+    c.indef = INDEF[c.id];
+    c.article = c.indef.split(' ')[0];                 // un / une / des
+    c.rest = c.indef.slice(c.article.length + 1);      // « long cou », « crinière »
+  });
+
+  // Which of the six animals REALLY have each part (used so that a « faux »
+  // statement or a wrong choice is never actually true in nature).
+  var ALL = animals.map(function (a) { return a.id; });
+  var HAS = {
+    criniere: ['lion', 'girafe'], crocs: ['lion', 'loup'], griffes: ['lion', 'loup', 'perruche'],
+    queue: ALL, cornes: ['gazelle', 'girafe'], sabots: ['gazelle', 'girafe'], pattes: ALL,
+    trompe: ['elephant'], defenses: ['elephant'], oreilles: ALL,
+    cou: ['girafe'],                                   // « un long cou »
+    taches: ['girafe', 'perruche'], museau: ['lion', 'gazelle', 'elephant', 'girafe', 'loup'],
+    fourrure: ['lion', 'gazelle', 'elephant', 'girafe', 'loup'],
+    bec: ['perruche'], ailes: ['perruche'], plumes: ['perruche']
+  };
+  // parts that make clear « faux » sentences (« Le loup a des ailes. »)
+  var FALSE_PARTS = ['trompe', 'defenses', 'bec', 'ailes', 'plumes', 'criniere', 'cornes', 'sabots'];
+  // parts precise enough for « Qui a … ? »
+  var WHO_PARTS = ['criniere', 'crocs', 'griffes', 'cornes', 'sabots', 'trompe', 'defenses', 'cou', 'taches', 'bec', 'ailes', 'plumes'];
+
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function startsVowel(w) { return /^[aeiouyhâàéèêëîïôöûü]/i.test(w); }
+  var S = {
+    // « Le lion a une crinière. »
+    has: function (animalId, c) { return cap(PR.data.animal(animalId).name) + ' a ' + c.indef + '.'; },
+    // « Le loup n'a pas d'ailes. »
+    hasNot: function (animalId, c) {
+      return cap(PR.data.animal(animalId).name) + ' n\'a pas ' + (startsVowel(c.rest) ? 'd\'' : 'de ') + c.rest + '.';
+    },
+    // « Qui a une trompe ? »
+    who: function (c) { return 'Qui a ' + c.indef + ' ?'; },
+    // « Le lion a ___ crinière. »
+    blank: function (c) { return cap(PR.data.animal(c.animal).name) + ' a ___ ' + c.rest + '.'; }
+  };
+
+  // « Qui suis-je ? » — one hand-written riddle per animal
+  var RIDDLES = {
+    lion: 'J\'ai une crinière et des griffes. Je rugis très fort. Qui suis-je ?',
+    gazelle: 'J\'ai des cornes et des sabots. Je cours très vite dans le désert. Qui suis-je ?',
+    elephant: 'J\'ai une trompe et des défenses. Qui suis-je ?',
+    girafe: 'J\'ai un long cou et des taches. Qui suis-je ?',
+    loup: 'J\'ai des crocs et une fourrure grise. Je hurle la nuit. Qui suis-je ?',
+    perruche: 'J\'ai un bec, des ailes et des plumes. Qui suis-je ?'
+  };
+
   PR.data = {
+    has: HAS, falseParts: FALSE_PARTS, whoParts: WHO_PARTS, riddles: RIDDLES, say: S,
+    animalHas: function (animalId, part) { return HAS[part].indexOf(animalId) >= 0; },
     animals: animals,
     cards: cards,
     animal: function (id) { return animals.filter(function (a) { return a.id === id; })[0]; },
@@ -104,6 +164,11 @@
     quizName: 'ما اسم هذا الجزء؟',
     quizSound: 'من يصدر هذا الصوت؟',
     memory: 'اعثر على الصورة والكلمة المتطابقتين.',
+    article: 'اختر الأداة المناسبة: un أو une أو des.',
+    trueFalse: 'هل الجملة صحيحة أم خاطئة؟',
+    who: 'من يملك هذا الجزء؟',
+    riddle: 'من أنا؟',
+    dictee: 'استمع إلى الكلمة ثم اكتبها.',
     listen: 'استمع'
   };
 })();

@@ -30,6 +30,7 @@
   function nextBtn(label, fn) {
     return el('button.btn.sun', { type: 'button', html: '<span>' + PR.fr(label) + '</span>' + PR.icons.next, onclick: fn });
   }
+  PR.nextBtn = function (label, fn) { return nextBtn(label, fn); };
   function center(node) {
     var r = node.getBoundingClientRect();
     return [r.left + r.width / 2, r.top + r.height / 2];
@@ -37,9 +38,12 @@
 
   /* ================= Montre-moi ================= */
   PR.screens.point = function (root) {
-    var TOTAL = 8;
+    // Facile: 6 questions, glow after 1 miss · Moyen: 8, after 2 · Difficile: 10, after 3, the instruction is only heard
+    var TOTAL = PR.byLevel({ facile: 6, moyen: 8, difficile: 10 });
+    var HINT_AFTER = PR.byLevel({ facile: 1, moyen: 2, difficile: 3 });
+    var EARS_ONLY = PR.level() === 'difficile';
     var list = deck(TOTAL), i = 0, firstTry = 0;
-    PR.topbar({ title: 'Montre-moi', ar: 'أرِني', total: TOTAL });
+    PR.topbar({ title: 'Montre-moi', ar: 'أرِني', total: TOTAL, level: true });
 
     function ask() {
       var c = list[i], tries = 0, solved = false;
@@ -47,12 +51,18 @@
       root.textContent = '';
       PR.progress(TOTAL, i);
       var scene = PR.Scene(c.animal);
-      var promptBox = el('div.prompt', el('span', { text: 'Touche ' + c.full + '.' }), PR.sayButton(c.full));
+      var promptText = el('span', { text: EARS_ONLY ? 'Écoute bien…' : 'Touche ' + c.full + '.' });
+      var promptBox = el('div.prompt', promptText, PR.sayButton(c.full));
+      if (EARS_ONLY) {
+        promptBox.appendChild(el('button.linkish', { type: 'button', text: 'Lire', onclick: function (e) {
+          e.stopPropagation(); promptText.textContent = PR.fr('Touche ' + c.full + '.'); e.currentTarget.remove();
+        } }));
+      }
       scene.card.appendChild(promptBox);
       root.appendChild(scene.el);
       var plural = PR.isPlural(c.word);
       var pron = plural ? 'les' : (/^le /.test(c.word) ? 'le' : 'la');
-      PR.suri.say((plural ? 'Où sont ' : 'Où est ') + c.full + ' ? Touche-' + pron + ' sur l\'image.', 'think', { ar: PR.ar.point + ' — ' + c.arFull });
+      PR.suri.say(EARS_ONLY ? 'Écoute bien, puis touche la bonne partie.' : (plural ? 'Où sont ' : 'Où est ') + c.full + ' ? Touche-' + pron + ' sur l\'image.', 'think', { ar: EARS_ONLY ? PR.ar.point : PR.ar.point + ' — ' + c.arFull });
       setTimeout(function () { PR.audio.say(c.full); }, 350);
 
       scene.onTap(function (t) {
@@ -87,7 +97,7 @@
           scene.light(t.part, 'soft');
           if (other) scene.label(PR.isPlural(other.word) ? 'Ce sont ' + other.word : 'C\'est ' + other.word, t.x, t.y - 3, 'soft');
           setTimeout(function () { if (!solved) scene.light(t.part, null); }, 1200);
-          if (tries >= 2) {
+          if (tries >= HINT_AFTER) {
             PR.suri.say('Regarde bien : ' + c.word + ' brille' + (PR.isPlural(c.word) ? 'nt' : '') + ' !', 'encourage');
             setTimeout(function () { if (!solved) scene.light(c.part, 'glow'); }, 1250);
           } else {
@@ -122,57 +132,121 @@
     wrong: 'Ce n\'est pas grave ! On écrit :'
   };
   PR.screens.spell = function (root) {
-    var TOTAL = 6;
+    // Facile: build the word with letter tiles · Moyen: type it · Difficile: dictée (hear it, no picture)
+    var MODE = PR.level();
+    var TOTAL = PR.byLevel({ facile: 5, moyen: 6, difficile: 8 });
     var queue, retried, i, okCount, asked;
     function reset() { queue = deck(TOTAL); retried = {}; i = 0; okCount = 0; asked = 0; }
     reset();
-    PR.topbar({ title: 'Écris le mot', ar: 'اكتب الكلمة', total: TOTAL });
+    PR.topbar({ title: MODE === 'difficile' ? 'Dictée' : 'Écris le mot', ar: MODE === 'difficile' ? 'إملاء' : 'اكتب الكلمة', total: TOTAL, level: true });
 
-    function ask() {
-      var c = queue[i], hintLevel = 0, done = false;
-      PR.debug = { card: c };
-      root.textContent = '';
-      PR.progress(TOTAL, Math.min(i, TOTAL));
-      var scene = PR.Scene(c.animal);
-      scene.light(c.part, 'glow');
-      var ring = scene.focus(c);
-      var cols = el('div.game-cols', scene.el);
-      root.appendChild(cols);
-
+    // ---- typing field + accent keys (Moyen, Difficile)
+    function typingInput(onEnter) {
       var input = el('input.spell-input', {
         type: 'text', autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: 'false',
-        lang: 'fr', 'aria-label': PR.fr('Écris le nom de la partie'), placeholder: PR.fr('Écris ici…'), enterkeyhint: 'done'
+        lang: 'fr', 'aria-label': PR.fr('Écris le mot'), placeholder: PR.fr('Écris ici…'), enterkeyhint: 'done'
       });
-      input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
+      input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); onEnter(); } });
       var accents = el('div.accents');
       ['é', 'è', 'ê', 'à', 'â', 'ç', 'î', 'ô', 'û', '\''].forEach(function (ch) {
         accents.appendChild(el('button', {
           type: 'button', raw: ch === '\'' ? '’' : ch, 'aria-label': ch,
           onmousedown: function (e) { e.preventDefault(); },
           onclick: function () {
-            var s = input.selectionStart == null ? input.value.length : input.selectionStart;
-            var e2 = input.selectionEnd == null ? s : input.selectionEnd;
-            input.value = input.value.slice(0, s) + ch + input.value.slice(e2);
+            var st = input.selectionStart == null ? input.value.length : input.selectionStart;
+            var en = input.selectionEnd == null ? st : input.selectionEnd;
+            input.value = input.value.slice(0, st) + ch + input.value.slice(en);
             input.focus();
-            input.setSelectionRange(s + 1, s + 1);
+            input.setSelectionRange(st + 1, st + 1);
             PR.audio.sfx('tap');
           }
         }));
       });
+      return {
+        nodes: [input, accents],
+        value: function () { return input.value; },
+        set: function (v) { input.value = v; },
+        done: function () { input.disabled = true; accents.remove(); },
+        focus: function () { if (window.matchMedia('(pointer: fine)').matches) setTimeout(function () { input.focus({ preventScroll: true }); }, 300); }
+      };
+    }
+
+    // ---- letter tiles (Facile): the article is given, the pupil orders the letters
+    function tilesInput(c) {
+      var sp = PR.answer.split(c.word);
+      var letters = sp.noun.split('');
+      var order = PR.shuffle(letters.map(function (ch, k) { return k; }));
+      // never start already solved
+      if (order.every(function (v, k) { return letters[v] === letters[k]; })) order.push(order.shift());
+      var slots = el('div.tile-answer'), bank = el('div.tile-bank'), picked = [];
+      var art = sp.article ? (sp.article === 'l\'' ? 'l\'' : sp.article + ' ') : '';
+      function render() {
+        slots.textContent = '';
+        if (art) slots.appendChild(el('span.tile-art', { text: art.trim() }));
+        letters.forEach(function (ch, k) {
+          var idx = picked[k];
+          var b = el('button.tile' + (idx === undefined ? '.empty' : ''), { type: 'button', raw: idx === undefined ? ' ' : letters[idx],
+            onclick: function () { if (idx === undefined) return; picked.splice(k, 1); PR.audio.sfx('tap'); render(); } });
+          slots.appendChild(b);
+        });
+        bank.textContent = '';
+        order.forEach(function (idx) {
+          var used = picked.indexOf(idx) >= 0;
+          bank.appendChild(el('button.tile' + (used ? '.used' : ''), { type: 'button', raw: letters[idx], disabled: used,
+            onclick: function () { if (picked.length < letters.length) { picked.push(idx); PR.audio.sfx('pop'); render(); } } }));
+        });
+      }
+      render();
+      return {
+        nodes: [slots, bank],
+        value: function () { return art + picked.map(function (idx) { return letters[idx]; }).join(''); },
+        set: function () {},
+        done: function () { bank.remove(); Array.prototype.forEach.call(slots.querySelectorAll('button'), function (x) { x.disabled = true; }); },
+        focus: function () {}
+      };
+    }
+
+    function ask() {
+      var c = queue[i], hintLevel = 0, done = false;
+      PR.debug = { card: c, mode: MODE };
+      root.textContent = '';
+      PR.progress(TOTAL, Math.min(i, TOTAL));
+      var scene = PR.Scene(c.animal), ring;
+      var cols = el('div.game-cols');
+      var dictee = MODE === 'difficile';
+      var cover;
+      if (dictee) {
+        // no picture until the answer: only the word, heard
+        cover = el('div.card.dictee-cover',
+          el('button.sound-orb', { type: 'button', 'aria-label': PR.fr('Écouter le mot'), html: PR.icons.speak, onclick: function () { PR.audio.unlock(); PR.audio.say(c.word); } }),
+          el('div.hint', { text: 'Écoute bien le mot.' }));
+        cover.querySelector('.sound-orb').style.color = '#fff';
+        cols.appendChild(cover);
+      } else {
+        scene.light(c.part, 'glow');
+        ring = scene.focus(c);
+        cols.appendChild(scene.el);
+      }
+      root.appendChild(cols);
+
+      var field = MODE === 'facile' ? tilesInput(c) : typingInput(function () { submit(); });
       var hint = el('div.hint');
       var actions = el('div.spell-actions',
-        el('button.btn.plain.small', { type: 'button', html: PR.icons.bulb + '<span>' + PR.fr('Indice') + '</span>', onclick: giveHint }),
+        MODE === 'facile' ? null : el('button.btn.plain.small', { type: 'button', html: PR.icons.bulb + '<span>' + PR.fr('Indice') + '</span>', onclick: giveHint }),
         el('button.btn.sky.small', { type: 'button', html: PR.icons.speak + '<span>' + PR.fr('Écouter') + '</span>', onclick: function () { PR.audio.unlock(); PR.audio.say(c.word); } }),
         el('button.btn', { type: 'button', text: 'Valider', onclick: submit })
       );
+      var question = dictee ? 'Écris le mot que tu entends.' : MODE === 'facile' ? 'Remets les lettres dans l\'ordre.' : 'Comment s\'appelle cette partie ?';
       var panel = el('div.card.spell-panel',
-        el('div.spell-q', { text: 'Comment s\'appelle cette partie ?' }),
-        el('div.hint', { text: 'Écris le mot avec son article : le, la, l\' ou les.' }),
-        PR.arLine(PR.ar.spell),
-        input, accents, hint, actions);
+        el('div.spell-q', { text: question }),
+        MODE === 'facile' ? null : el('div.hint', { text: 'Écris le mot avec son article : le, la, l\' ou les.' }),
+        PR.arLine(dictee ? PR.ar.dictee : PR.ar.spell),
+        field.nodes, hint, actions);
       cols.appendChild(panel);
-      PR.suri.say('Regarde la partie qui brille. Comment s\'appelle-t-elle ?', 'think', { ar: PR.ar.spell });
-      if (window.matchMedia('(pointer: fine)').matches) setTimeout(function () { input.focus({ preventScroll: true }); }, 300);
+      PR.suri.say(dictee ? 'Écoute bien, puis écris le mot avec son article.' : MODE === 'facile' ? 'Regarde la partie qui brille et range les lettres !' : 'Regarde la partie qui brille. Comment s\'appelle-t-elle ?',
+        'think', { ar: dictee ? PR.ar.dictee : PR.ar.spell });
+      field.focus();
+      if (dictee) setTimeout(function () { PR.audio.say(c.word); }, 450);
 
       function giveHint() {
         PR.audio.sfx('sparkle');
@@ -187,17 +261,16 @@
       function submit() {
         if (done) return;
         PR.audio.unlock();
-        var typed = input.value;
+        var typed = field.value();
         var r = PR.answer.check(typed, c.word);
         if (r.empty) {
-          PR.suri.say('Écris le mot dans la case blanche.', 'think');
-          input.focus();
+          PR.suri.say(MODE === 'facile' ? 'Touche les lettres pour écrire le mot.' : 'Écris le mot dans la case blanche.', 'think');
           return;
         }
         done = true;
         asked++;
-        input.disabled = true;
-        actions.remove(); accents.remove(); hint.remove();
+        field.done();
+        actions.remove(); hint.remove();
 
         var note = r.ok ? (r.perfect ? 'perfect' : ['typo', 'number', 'accents', 'article-missing', 'article'].filter(function (n) { return r.notes.indexOf(n) >= 0; })[0]) : 'wrong';
         if (note === 'number' && !PR.isPlural(c.word)) note = 'numberSing';
@@ -218,7 +291,8 @@
         panel.appendChild(nextBtn('Continuer', next));
         panel.lastChild.focus({ preventScroll: true });
 
-        ring.remove();
+        if (dictee) { cover.replaceWith(scene.el); }
+        if (ring) ring.remove();
         scene.light(c.part, r.ok ? 'good' : 'soft');
         var pos = scene.anchor(c);
         scene.label(c.word, pos[0], pos[1] - 4, r.ok ? 'good' : 'soft');
@@ -243,7 +317,7 @@
       PR.progress(TOTAL, TOTAL);
       PR.finish({
         stars: PR.starsFor(okCount, asked),
-        title: 'Bravo, petit écrivain !',
+        title: MODE === 'difficile' ? 'Bravo pour ta dictée !' : 'Bravo, petit écrivain !',
         text: 'Tu as écrit ' + okCount + ' mots sur ' + asked + '. Continue comme ça !',
         again: function () { reset(); ask(); }
       });
@@ -253,11 +327,13 @@
 
   /* ================= Quiz ================= */
   PR.screens.quiz = function (root) {
-    var TOTAL = 8;
+    var TOTAL = PR.byLevel({ facile: 6, moyen: 8, difficile: 10 });
+    var N_CHOICES = PR.byLevel({ facile: 3, moyen: 3, difficile: 4 });
     var qs, i, firstTry;
     function build() {
       var withSound = PR.data.animals.filter(function (a) { return PR.audio.hasAnimal(a.id); });
-      var types = ['whose', 'name', 'whose', 'name', 'whose', 'name', 'sound', 'sound'];
+      var types = [];
+      for (var t = 0; t < TOTAL; t++) types.push(['whose', 'name', 'sound', 'whose', 'name'][t % 5]);
       if (withSound.length < 3) types = types.map(function (t) { return t === 'sound' ? 'whose' : t; });
       types = PR.shuffle(types);
       var cards = deck(TOTAL);
@@ -266,10 +342,10 @@
       i = 0; firstTry = 0;
     }
     build();
-    PR.topbar({ title: 'Quiz', ar: 'الأسئلة', total: TOTAL });
+    PR.topbar({ title: 'Quiz', ar: 'الأسئلة', total: TOTAL, level: true });
 
     function animalChoices(correctId, excludeIds) {
-      var others = PR.shuffle(PR.data.animals.filter(function (a) { return a.id !== correctId && excludeIds.indexOf(a.id) < 0; })).slice(0, 2);
+      var others = PR.shuffle(PR.data.animals.filter(function (a) { return a.id !== correctId && excludeIds.indexOf(a.id) < 0; })).slice(0, N_CHOICES - 1);
       return PR.shuffle([PR.data.animal(correctId)].concat(others));
     }
 
@@ -329,7 +405,7 @@
         var rest = PR.data.cards.filter(function (x) { return x.word !== c2.word && x.animal !== c2.animal; });
         var wrong = [];
         PR.shuffle(sameAnimal).concat(PR.shuffle(rest)).forEach(function (x) {
-          if (wrong.length < 2 && wrong.indexOf(x.word) < 0) wrong.push(x.word);
+          if (wrong.length < N_CHOICES - 1 && wrong.indexOf(x.word) < 0) wrong.push(x.word);
         });
         PR.shuffle([c2.word].concat(wrong)).forEach(function (w) {
           var b = el('button.choice.word-choice', { type: 'button', text: w });
@@ -378,8 +454,8 @@
 
   /* ================= Mémoire ================= */
   PR.screens.memory = function (root) {
-    var PAIRS = 6;
-    PR.topbar({ title: 'Mémoire', ar: 'لعبة الذاكرة' });
+    var PAIRS = PR.byLevel({ facile: 4, moyen: 6, difficile: 8 });
+    PR.topbar({ title: 'Mémoire', ar: 'لعبة الذاكرة', level: true });
 
     function start() {
       root.textContent = '';
@@ -391,7 +467,7 @@
       var tiles = [];
       chosen.forEach(function (c) { tiles.push({ c: c, kind: 'pic' }); tiles.push({ c: c, kind: 'word' }); });
       tiles = PR.shuffle(tiles);
-      var grid = el('div.mem-grid');
+      var grid = el('div.mem-grid', { 'data-n': String(PAIRS * 2) });
       PR.debug = { tiles: tiles };
       var open = [], busy = false, moves = 0, found = 0;
       var info = el('p.mem-info', { text: 'Retourne deux cartes : une image et son mot.' });
@@ -449,7 +525,7 @@
       }
       function end() {
         PR.finish({
-          stars: moves <= 9 ? 3 : moves <= 14 ? 2 : 1,
+          stars: moves <= PAIRS * 1.5 ? 3 : moves <= PAIRS * 2.4 ? 2 : 1,
           title: 'Quelle mémoire !',
           text: 'Tu as trouvé les ' + PAIRS + ' paires en ' + moves + ' coups.',
           again: start

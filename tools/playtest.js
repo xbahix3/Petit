@@ -136,6 +136,50 @@ const { chromium } = require(process.env.PW_PATH || 'playwright');
   await page.waitForTimeout(2200);
   await shot('memory-finish');
 
+  // ---- Les phrases (Moyen): one wrong answer, then the right one
+  await page.goto(base + '#/phrases'); await page.waitForTimeout(800);
+  for (let q = 0; q < 8; q++) {
+    const info = await page.evaluate(() => { const q = PR.debug.q, D = PR.data;
+      if (q.kind === 'article') return { kind: q.kind, ans: q.card.article };
+      if (q.kind === 'vf') return { kind: q.kind, ans: q.truth ? 'Vrai' : 'Faux' };
+      return { kind: q.kind, ans: PR.cap(D.animal(q.kind === 'who' ? q.card.animal : q.animal).name) }; });
+    const btns = await page.$$('.phrase-card .choice');
+    let right = null;
+    for (const b of btns) { const t = (await b.innerText()).split('\n')[0].replace(/\u2019/g, "'"); if (t === info.ans.replace(/\u2019/g, "'")) right = b; }
+    if (!right) { errors.push('phrases: no button for ' + JSON.stringify(info)); break; }
+    if (info.kind !== 'vf') { for (const b of btns) if (b !== right) { await b.click(); break; } await page.waitForTimeout(250); await typo('phrases-' + info.kind); }
+    await right.click(); await page.waitForTimeout(400);
+    await typo('phrases-' + info.kind + '-right');
+    if (q < 4) await shot('phrases-' + info.kind);
+    await page.click('.phrase-card .btn.sun'); await page.waitForTimeout(350);
+  }
+  await page.waitForTimeout(700);
+  await shot('phrases-finish');
+
+  // ---- levels: tiles (Facile) and dictée (Difficile)
+  await page.evaluate(() => PR.settings.set('level', 'facile'));
+  await page.goto(base + '#/spell'); await page.reload(); await page.waitForTimeout(800);
+  const noun = await page.evaluate(() => PR.answer.split(PR.debug.card.word).noun);
+  for (const ch of noun) {
+    const tiles = await page.$$('.tile-bank .tile:not(.used)');
+    for (const t of tiles) { if ((await t.innerText()) === ch) { await t.click(); break; } }
+  }
+  await page.click('button:has-text("Valider")'); await page.waitForTimeout(500);
+  if (!(await page.$('.answer.good'))) errors.push('tiles: answer not accepted');
+  await shot('spell-tiles');
+  await page.evaluate(() => PR.settings.set('level', 'difficile'));
+  await page.goto(base + '#/spell'); await page.reload(); await page.waitForTimeout(800);
+  await shot('dictee');
+  await page.fill('.spell-input', await page.evaluate(() => PR.debug.card.word));
+  await page.click('button:has-text("Valider")'); await page.waitForTimeout(500);
+  if (!(await page.$('.answer.good')) || !(await page.$('.scene-card'))) errors.push('dictée: answer or picture missing');
+  await shot('dictee-answer');
+  for (const lv of ['facile', 'difficile']) {
+    await page.evaluate((l) => PR.settings.set('level', l), lv);
+    for (const h of ['#/point', '#/quiz', '#/memory', '#/phrases']) { await page.goto(base + h); await page.reload(); await page.waitForTimeout(500); await typo(lv + h); }
+  }
+  await page.evaluate(() => PR.settings.set('level', 'moyen'));
+
   for (const hash of ['', '#/home', '#/discover', '#/credits']) { await page.goto(base + hash); await page.waitForTimeout(500); await typo(hash || 'title'); }
   for (const a of ['lion', 'gazelle', 'elephant', 'girafe', 'loup', 'perruche']) {
     await page.goto(base + '#/animal/' + a); await page.waitForTimeout(400); await typo(a);

@@ -50,13 +50,14 @@
     { id: 'point', title: 'Montre-moi', text: 'Touche la bonne partie de l\'animal.', ar: 'أرِني', icon: 'pointer', bg: 'linear-gradient(135deg,#9BE3BD,#2E9E6A)' },
     { id: 'spell', title: 'Écris le mot', text: 'Écris le nom de la partie.', ar: 'اكتب الكلمة', icon: 'pencil', bg: 'linear-gradient(135deg,#A6DDF7,#3FA9E0)' },
     { id: 'quiz', title: 'Quiz', text: 'Réponds aux devinettes.', ar: 'الأسئلة', icon: 'question', bg: 'linear-gradient(135deg,#D3C2F7,#8E6FD8)' },
-    { id: 'memory', title: 'Mémoire', text: 'Retrouve les paires.', ar: 'لعبة الذاكرة', icon: 'cards', bg: 'linear-gradient(135deg,#FFBACA,#E5677E)' }
+    { id: 'memory', title: 'Mémoire', text: 'Retrouve les paires.', ar: 'لعبة الذاكرة', icon: 'cards', bg: 'linear-gradient(135deg,#FFBACA,#E5677E)' },
+    { id: 'phrases', title: 'Les phrases', text: 'Complète les phrases et devine les animaux.', ar: 'الجمل', icon: 'bubble', bg: 'linear-gradient(135deg,#FFE29A,#F08F5E)' }
   ];
   PR.ACTIVITIES = ACTIVITIES;
 
   PR.screens.home = function (root) {
     PR.topbar({ title: 'Le camp du ranger', ar: 'مخيم الحارس' });
-    PR.suri.say('Bonjour, petit ranger ! Que veux-tu faire aujourd\'hui ?', 'happy', { ar: 'مرحبًا أيها الحارس الصغير! ماذا تريد أن تفعل اليوم؟' });
+    PR.suri.say('Bonjour, petit ranger ! Que veux-tu faire aujourd\'hui ?', 'happy', { ar: 'مرحبًا أيها الحارس الصغير! ماذا تريد أن تفعل اليوم؟', fade: 5000 });
     var grid = el('div.activities');
     ACTIVITIES.forEach(function (act, i) {
       var b = el('button.activity', { type: 'button', onclick: function () { PR.audio.unlock(); PR.audio.sfx('tap'); PR.go(act.id); } },
@@ -65,7 +66,21 @@
       b.style.animationDelay = (i * 0.07) + 's';
       grid.appendChild(b);
     });
+    var levels = el('div.levels', { role: 'radiogroup', 'aria-label': PR.fr('Niveau') },
+      el('span.levels-label', { text: 'Niveau :' }));
+    PR.LEVELS.forEach(function (l) {
+      var b = el('button.level-btn.lv-' + l[0], {
+        type: 'button', role: 'radio', 'aria-checked': PR.level() === l[0] ? 'true' : 'false',
+        onclick: function () {
+          PR.settings.set('level', l[0]);
+          PR.audio.sfx('tap');
+          Array.prototype.forEach.call(levels.querySelectorAll('.level-btn'), function (x) { x.setAttribute('aria-checked', x === b ? 'true' : 'false'); });
+        }
+      }, el('span', { text: l[1] }), PR.arLine(l[2], 'inline'));
+      levels.appendChild(b);
+    });
     root.appendChild(el('div.screen-head', el('h1', { text: 'Choisis une activité' }), PR.arLine('اختر نشاطًا')));
+    root.appendChild(levels);
     root.appendChild(grid);
   };
 

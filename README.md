@@ -20,6 +20,11 @@ Modern Standard Arabic. Suri the meerkat ranger guides and encourages the pupil.
   - **Quiz** : « À qui sont ces oreilles ? », « Comment s'appelle cette partie ? »,
     « Qui fait ce bruit ? »
   - **Mémoire** : associer l'image d'une partie et son mot.
+  - **Les phrases** : « Le lion a ___ crinière. » (un, une ou des), vrai ou faux
+    (« Le loup a des ailes. »), « Qui a une trompe ? » et devinettes « Qui suis-je ? ».
+- Trois niveaux, choisis au camp : **Facile** (moins de questions, lettres à remettre
+  dans l'ordre, indices rapides), **Moyen** et **Difficile** (dictée sans image,
+  consigne seulement entendue dans « Montre-moi », 4 choix au quiz, 8 paires).
 - Les erreurs ne sont jamais punies : son doux, couleur chaude, Suri encourage.
 - Rien n'est enregistré sur les élèves.
 

@@ -45,6 +45,10 @@
     cards: svg('0 0 96 96',
       '<g transform="rotate(-14 34 52)"><rect x="12" y="18" width="40" height="56" rx="8" fill="#2E9E6A" stroke="#3B2A1C" stroke-width="3.5"/><g transform="translate(18 32) scale(.44)" fill="#FFF3D6"><ellipse cx="32" cy="42" rx="14" ry="12"/><ellipse cx="16" cy="26" rx="6" ry="8"/><ellipse cx="27" cy="17" rx="6" ry="8"/><ellipse cx="38" cy="17" rx="6" ry="8"/><ellipse cx="48" cy="26" rx="6" ry="8"/></g></g>' +
       '<g transform="rotate(12 62 52)"><rect x="42" y="18" width="40" height="56" rx="8" fill="#fff" stroke="#3B2A1C" stroke-width="3.5"/><path d="M52 52c4-14 18-18 22-6-8 2-14 8-22 6z" fill="#F5A524"/><circle cx="62" cy="36" r="6" fill="#E5677E"/></g>', 'icon'),
+    bubble: svg('0 0 96 96',
+      '<path d="M14 18h68a8 8 0 0 1 8 8v34a8 8 0 0 1-8 8H44L26 82l4-14H14a8 8 0 0 1-8-8V26a8 8 0 0 1 8-8z" fill="#fff" stroke="#3B2A1C" stroke-width="4" stroke-linejoin="round"/>' +
+      '<rect x="18" y="32" width="18" height="8" rx="4" fill="#F08F5E"/><rect x="40" y="32" width="36" height="8" rx="4" fill="#D9C7AE"/>' +
+      '<rect x="18" y="48" width="30" height="8" rx="4" fill="#D9C7AE"/><rect x="52" y="48" width="14" height="8" rx="4" fill="#2E9E6A"/>', 'icon'),
     ear: svg('0 0 24 24', '<path d="M5 20c2 0 3-1 3-3 0-3 4-4 4-8a4 4 0 1 0-8 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>')
   };
 })();

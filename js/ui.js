@@ -20,6 +20,10 @@
     if (o.title) {
       title.appendChild(document.createTextNode(PR.fr(o.title)));
       if (o.ar) title.appendChild(PR.arLine(' ' + o.ar, 'inline'));
+      if (o.level) {
+        var lv = PR.LEVELS.filter(function (l) { return l[0] === PR.level(); })[0];
+        title.appendChild(el('span.lvl-chip.lv-' + lv[0], { text: lv[1] }));
+      }
     }
     PR.progress(o.total || 0, 0);
   };
@@ -56,6 +60,13 @@
       void dock.offsetWidth;
       if (mood === 'cheer') dock.classList.add('hop');
       clearTimeout(bubbleTimer);
+      clearTimeout(PR.suri._fade);
+      // on phones the bubble would cover buttons: let it fade after a moment
+      if (!o.fade && window.matchMedia && window.matchMedia('(max-width: 560px)').matches) o.fade = 4500;
+      if (o.fade) {
+        var bubble = dock.querySelector('.bubble');
+        PR.suri._fade = setTimeout(function () { if (bubble) { bubble.classList.add('gone'); } }, o.fade);
+      }
       if (mood === 'cheer' || mood === 'encourage') {
         bubbleTimer = setTimeout(function () {
           PR.suriMood(fig.querySelector('img'), 'happy');

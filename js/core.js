@@ -81,6 +81,11 @@
     }
   };
 
+  // Difficulty: 'facile' | 'moyen' | 'difficile' (remembered on this device)
+  PR.LEVELS = [['facile', 'Facile', 'سهل'], ['moyen', 'Moyen', 'متوسط'], ['difficile', 'Difficile', 'صعب']];
+  PR.level = function () { return PR.settings.get('level', 'moyen'); };
+  PR.byLevel = function (map) { return map[PR.level()]; };
+
   PR.wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
   PR.reducedMotion = function () {
     return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

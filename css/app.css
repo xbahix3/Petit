@@ -553,3 +553,68 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 #loader .bar { width: min(320px, 70vw); height: 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.7); box-shadow: inset 0 2px 4px rgba(120, 78, 30, 0.2); overflow: hidden; }
 #loader .bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--leaf), #5FD39A); transition: width .3s ease; }
 #loader p { margin: 0; font-family: var(--font-title); font-weight: 500; font-size: 20px; color: var(--ink); }
+
+/* ---------- difficulty ---------- */
+.levels { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin: -4px 0 18px; }
+.levels-label { font-family: var(--font-title); font-weight: 500; color: var(--ink-soft); margin-right: 4px; }
+.level-btn { border: 0; cursor: pointer; min-height: 44px; padding: 6px 16px; border-radius: 999px; font-family: var(--font-title); font-weight: 600; font-size: 18px;
+  background: #fff; color: var(--ink-soft); box-shadow: 0 3px 0 var(--line); display: inline-flex; flex-direction: column; align-items: center; line-height: 1.1; }
+.level-btn .ar { font-size: 14px; }
+.level-btn[aria-checked="true"].lv-facile { background: var(--good); color: #fff; box-shadow: 0 3px 0 #1F8A4E; }
+.level-btn[aria-checked="true"].lv-moyen { background: var(--sun); color: #fff; box-shadow: 0 3px 0 var(--sun-dark); }
+.level-btn[aria-checked="true"].lv-difficile { background: var(--berry); color: #fff; box-shadow: 0 3px 0 var(--berry-dark); }
+.level-btn[aria-checked="true"] .ar { color: #fff; }
+.lvl-chip { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #fff; }
+.lvl-chip.lv-facile { background: var(--good); } .lvl-chip.lv-moyen { background: var(--sun); } .lvl-chip.lv-difficile { background: var(--berry); }
+
+/* ---------- letter tiles (Écris le mot, Facile) ---------- */
+.tile-answer, .tile-bank { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; }
+.tile-answer { min-height: 64px; padding: 8px; border-radius: 18px; background: #FFFDF8; border: 3px dashed var(--line); width: 100%; max-width: 520px; }
+.tile-art { font-family: var(--font-read); font-weight: 700; font-size: 28px; color: var(--sun-dark); margin-right: 6px; }
+.tile { width: 46px; height: 54px; border: 0; border-radius: 12px; cursor: pointer; font-family: var(--font-read); font-weight: 700; font-size: 28px;
+  background: #fff; color: var(--ink); box-shadow: 0 4px 0 var(--line), 0 6px 12px rgba(120, 78, 30, 0.12); transition: transform .1s; }
+.tile:active { transform: translateY(3px); }
+.tile.empty { background: rgba(235, 216, 184, 0.35); box-shadow: inset 0 2px 4px rgba(120, 78, 30, 0.15); cursor: default; }
+.tile.used { opacity: .25; }
+.tile-bank .tile { background: linear-gradient(#FFF8E6, #FFE7B6); }
+@media (max-width: 560px) { .tile { width: 40px; height: 48px; font-size: 24px; } }
+.dictee-cover { aspect-ratio: 3 / 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: radial-gradient(ellipse at 50% 40%, #FFF6E4, #F2D3A0); }
+.mem-grid[data-n="16"] { width: min(100%, 760px, calc((var(--free-h) - 60px) * 0.75)); }
+
+/* ---------- Les phrases ---------- */
+.phrase-side { display: flex; flex-direction: column; gap: 14px; align-items: stretch; width: 100%; }
+.phrase-line { font-family: var(--font-read); font-weight: 700; font-size: clamp(24px, 4.6vw, 32px); line-height: 1.35; text-align: center;
+  background: #FFFDF8; border: 3px solid var(--line); border-radius: 20px; padding: 14px 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 10px; }
+.phrase-line .say { width: 40px; height: 40px; }
+.blank { display: inline-block; min-width: 76px; padding: 0 8px; border-bottom: 4px dashed var(--sun); color: var(--sun-dark); text-align: center; }
+.blank.filled { border-bottom-style: solid; border-color: var(--good); color: var(--good); animation: popIn .4s cubic-bezier(.2, .9, .3, 1.6); }
+.article-choices, .tf-choices { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)) !important; }
+.tf-choices .tf-true { color: var(--leaf-dark); } .tf-choices .tf-false { color: var(--berry-dark); }
+.phrase-feedback { grid-column: 1 / -1; text-align: center; font-size: 20px; border-radius: 18px; padding: 0; }
+.phrase-feedback.good, .phrase-feedback.soft { padding: 12px 16px; animation: popIn .35s both; }
+.phrase-feedback.good { background: var(--good-light); }
+.phrase-feedback.soft { background: var(--soft-light); }
+.riddle { font-family: var(--font-read); font-weight: 700; font-size: clamp(22px, 4.2vw, 30px); line-height: 1.4; text-align: center;
+  background: var(--sun-light); border-radius: 20px; padding: 18px 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+.quiz-q .say { width: 40px; height: 40px; vertical-align: middle; margin-left: 8px; }
+@media (min-width: 900px) {
+  .phrase-card .quiz-body { grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); }
+  .phrase-card .quiz-body.k-who, .phrase-card .quiz-body.k-riddle { display: flex; flex-direction: column; align-items: stretch; max-width: 760px; margin: 0 auto; }
+  .k-who .choices, .k-riddle .choices { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .k-who .choice, .k-riddle .choice { flex-direction: column; justify-content: center; text-align: center; padding: 10px; }
+  .k-who .choice .pic, .k-riddle .choice .pic { width: 100%; max-width: 170px; }
+}
+
+.bubble.gone { opacity: 0; transform: translateY(8px); transition: opacity .6s ease, transform .6s ease; }
+@media (min-width: 900px) {
+  .activity .art-top { height: 108px; }
+  .activity .art-top svg.icon { width: 80px; height: 80px; }
+  .activity .txt { padding: 10px 16px 14px; }
+  .activity h2 { font-size: 23px; }
+}
+
+@media (max-width: 560px) {
+  .lvl-chip { display: none; }
+  .dictee-cover { aspect-ratio: auto; padding: 18px; }
+  .dictee-cover .sound-orb { width: 110px; height: 110px; }
+}
