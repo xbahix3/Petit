@@ -72,7 +72,8 @@ The vocabulary, Arabic translations and fun facts live in `js/data.js`.
 | Wolf howls | [Wolf howls.ogg](https://commons.wikimedia.org/wiki/File:Wolf_howls.ogg) | Public domain |
 | Giraffe snort and night hum | [Giraffe snort.oga](https://commons.wikimedia.org/wiki/File:Giraffe_snort.oga), [Giraffe Hum.oga](https://commons.wikimedia.org/wiki/File:Giraffe_Hum.oga), A. Baotic, F. Sicks, A. S. Stoeger | CC BY-SA 4.0 |
 | Budgerigar flock | [XC924266](https://xeno-canto.org/924266), Louis Masarei | CC BY-NC-SA 4.0 |
-| French voice | Piper "siwis" voice, trained on the SIWIS corpus (University of Edinburgh) | CC BY 4.0 |
+| French words (43 clips) | ElevenLabs voice « Léa » (eleven_multilingual_v2), slowed to 80 % for young learners | ElevenLabs terms |
+| French sentences and riddles | Piper "siwis" voice, trained on the SIWIS corpus (University of Edinburgh) | CC BY 4.0 |
 | Feedback chimes | Synthesised in the browser (`js/audio.js`) | — |
 
 No freely licensed recording of a gazelle was found, so the gazelle has no call and is

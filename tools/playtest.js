@@ -35,7 +35,7 @@ const { chromium } = require(process.env.PW_PATH || 'playwright');
   // click the visible centre of a part (or of another part)
   const tapPart = (part, other) => page.evaluate(([part, other]) => {
     const svg = document.querySelector('.scene-card svg');
-    const groups = [...svg.querySelectorAll('[data-part]')].filter((g) => other ? g.dataset.part !== part : g.dataset.part === part);
+    const groups = [...svg.querySelectorAll('[data-part]')].filter((g) => other ? g.dataset.part !== part && g.dataset.alt !== part : g.dataset.part === part);
     for (const g of groups) {
       for (const shape of [...g.querySelectorAll('*')].filter((e) => e.getBBox)) {
         const r = shape.getBoundingClientRect();
