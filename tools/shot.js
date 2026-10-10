@@ -14,7 +14,7 @@ const { chromium } = require(process.env.PW_PATH || 'playwright');
   for (const item of hashes) {
     const [hash, js] = item.split('@js:');
     await page.goto(base + hash);
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(Number(process.env.WAIT || 700));
     if (js) { await page.evaluate(js); await page.waitForTimeout(900); }
     const file = path.join(outDir, `${w}x${h}_${hash.replace(/[#/]/g, '_') || 'title'}${js ? '_js' : ''}.png`);
     await page.screenshot({ path: file });

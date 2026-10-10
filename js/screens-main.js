@@ -12,30 +12,33 @@
   PR.cestPhrase = function (c) { return (PR.isPlural(c.word) ? 'Ce sont ' : 'C\'est ') + c.full + '.'; };
 
   /* ---------------- title ---------------- */
+  // the painted herd standing on the panorama (positions in css: .h-<id>)
+  var HERD = ['girafe', 'gazelle', 'elephant', 'loup', 'lion', 'perruche'];
   PR.screens.title = function (root) {
     PR.topbar({ hidden: true });
     PR.suri.hide();
-    var medals = el('div.medals');
-    PR.data.animals.forEach(function (a, i) {
-      var m = el('div.medal', { html: PR.portraitSVG(a.id), title: PR.fr(cap(a.name)) });
-      m.style.animationDelay = (0.3 + i * 0.08) + 's, ' + (i * 0.4) + 's';
-      medals.appendChild(m);
+    var bg = el('picture.title-bg');
+    bg.innerHTML = '<source media="(orientation: portrait)" srcset="img/title/portrait.webp"><img src="img/title/landscape.webp" alt="">';
+    var herd = el('div.herd', { 'aria-hidden': 'true' });
+    HERD.forEach(function (id, i) {
+      var img = el('img.herd-animal.h-' + id, { src: PR.plates[id].img, alt: '', draggable: 'false' });
+      img.style.animationDelay = (0.25 + i * 0.12) + 's';
+      herd.appendChild(img);
     });
-    var suri = el('div.title-suri', { html: PR.svg('suri', { title: 'Suri' }) });
-    suri.querySelector('svg').setAttribute('data-mood', 'cheer');
     var start = el('button.btn.big.sun', {
       type: 'button', text: 'Commencer l\'aventure',
       onclick: function () { PR.audio.unlock(); PR.audio.sfx('pop'); PR.go('home'); }
     });
     root.appendChild(el('div.title-screen',
-      el('div.title-bg', { html: PR.svg('savanna', { animal: false, cover: true }) }),
-      el('div.logo',
-        el('span.leaf.l', { html: PR.icons.leaf }), el('span.leaf.r', { html: PR.icons.leaf }),
-        el('div.badge', el('span.small', { text: 'Le Petit' }), el('span.big', { text: 'Ranger' }))),
-      el('div.tagline', { text: 'Découvre les animaux sauvages et les parties de leur corps !' }),
-      medals,
-      start,
-      suri,
+      bg,
+      herd,
+      el('div.title-content',
+        el('div.logo',
+          el('span.leaf.l', { html: PR.icons.leaf }), el('span.leaf.r', { html: PR.icons.leaf }),
+          el('div.badge', el('span.small', { text: 'Le Petit' }), el('span.big', { text: 'Ranger' }))),
+        el('div.tagline', { text: 'Découvre les animaux sauvages et les parties de leur corps !' }),
+        start),
+      el('div.title-suri', PR.suriImg('cheer')),
       el('div.title-credits', el('button.linkish', { type: 'button', text: 'Crédits', onclick: function () { PR.go('credits'); } }))
     ));
     setTimeout(function () { start.focus({ preventScroll: true }); }, 50);
@@ -203,7 +206,7 @@
       el('h2', { text: 'Polices' }),
       el('p', { text: 'Fredoka, Andika et Noto Naskh Arabic — licence SIL Open Font License.' }),
       el('h2', { text: 'Dessins et jeu' }),
-      el('p', { text: 'Peintures des animaux créées pour ce jeu avec le modèle d\'images de ChatGPT. Suri et le décor du titre sont dessinés en code (SVG).' })
+      el('p', { text: 'Peintures (animaux, Suri et paysage du titre) créées pour ce jeu avec le modèle d\'images de ChatGPT.' })
     ));
   };
 })();

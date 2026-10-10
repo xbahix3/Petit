@@ -37,14 +37,14 @@
     mount: function () {
       dock = document.querySelector('.suri-dock');
       fig = dock.querySelector('.suri-fig');
-      fig.innerHTML = PR.svg('suri', { title: 'Suri' });
+      fig.appendChild(PR.suriImg('happy'));
     },
     // say(text, mood, {ar, good, keep})
     say: function (text, mood, o) {
       o = o || {};
       if (!dock) return;
       dock.hidden = false;
-      fig.querySelector('svg').setAttribute('data-mood', mood || 'happy');
+      PR.suriMood(fig.querySelector('img'), mood || 'happy');
       var old = dock.querySelector('.bubble');
       if (old) old.remove();
       if (text) {
@@ -58,12 +58,22 @@
       clearTimeout(bubbleTimer);
       if (mood === 'cheer' || mood === 'encourage') {
         bubbleTimer = setTimeout(function () {
-          var s = fig.querySelector('svg');
-          if (s) s.setAttribute('data-mood', 'happy');
+          PR.suriMood(fig.querySelector('img'), 'happy');
         }, 2200);
       }
     },
     hide: function () { if (dock) dock.hidden = true; }
+  };
+
+  /* ---------------- painted Suri ---------------- */
+  PR.SURI_MOODS = ['happy', 'cheer', 'encourage', 'think', 'binoculars'];
+  PR.suriImg = function (mood, cls) {
+    return el('img.suri-img' + (cls ? '.' + cls : ''), { src: 'img/suri/' + mood + '.webp', alt: 'Suri', draggable: 'false', 'data-mood': mood });
+  };
+  PR.suriMood = function (img, mood) {
+    if (!img || img.getAttribute('data-mood') === mood) return;
+    img.setAttribute('data-mood', mood);
+    img.src = 'img/suri/' + mood + '.webp';
   };
 
   /* ---------------- small helpers ---------------- */
@@ -93,7 +103,21 @@
     var wrap = el('div.scene-wrap');
     var card = el('div.scene-card');
     wrap.appendChild(card);
-    card.innerHTML = PR.svg(animalId, { title: PR.fr(a.name) });
+    var P = PR.plates[animalId], sh = P.shadow;
+    // backdrop and soft ground shadow live in the card background (no repaint while animating)
+    card.style.background =
+      'radial-gradient(ellipse ' + (sh[2] / P.w * 100) + '% ' + (sh[3] * 2.4 / P.h * 100) + '% at ' + (sh[0] / P.w * 100) + '% ' + (sh[1] / P.h * 100) + '%, rgba(58,38,16,.30), rgba(58,38,16,0) 70%),' +
+      'radial-gradient(ellipse 78% 78% at 50% 40%, ' + P.backdrop[0] + ', ' + P.backdrop[1] + ')';
+    for (var m = 0; m < 6; m++) {
+      var mote = el('span.mote');
+      mote.style.left = (8 + m * 15 + (m % 2) * 6) + '%';
+      mote.style.animationDelay = (m * 1.7) + 's';
+      mote.style.animationDuration = (9 + (m % 3) * 3) + 's';
+      card.appendChild(mote);
+    }
+    var paint = el('img.paint-live', { src: P.img, alt: PR.fr(a.name), draggable: 'false' });
+    card.appendChild(paint);
+    card.insertAdjacentHTML('beforeend', PR.svg(animalId, { title: PR.fr(a.name), scene: false, paint: false, shadow: false }));
     var svg = card.querySelector('svg');
     var pre = svg.getAttribute('data-prefix');
     var dims = PR.plateDims(animalId);
@@ -164,11 +188,11 @@
       },
       // the animal "speaks": real recording + a little animation
       act: function () {
-        svg.classList.remove('act');
-        void svg.getBoundingClientRect();
-        svg.classList.add('act');
+        card.classList.remove('act');
+        void card.offsetWidth;
+        card.classList.add('act');
         clearTimeout(actTimer);
-        actTimer = setTimeout(function () { svg.classList.remove('act'); }, 3200);
+        actTimer = setTimeout(function () { card.classList.remove('act'); }, 3200);
         return PR.audio.animal(animalId);
       }
     };
@@ -248,8 +272,7 @@
       holder.firstChild.style.animationDelay = (0.25 + i * 0.22) + 's';
       stars.appendChild(holder.firstChild);
     }
-    var suriBox = el('div.suri-mini', { html: PR.svg('suri') });
-    suriBox.querySelector('svg').setAttribute('data-mood', 'cheer');
+    var suriBox = el('div.suri-mini', PR.suriImg('cheer'));
     var overlay = el('div.overlay', { role: 'dialog', 'aria-modal': 'true' },
       el('div.card.finish',
         suriBox,

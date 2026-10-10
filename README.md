@@ -50,8 +50,12 @@ The vocabulary, Arabic translations and fun facts live in `js/data.js`.
   `js/art/plates.js` holds, for each painting, a hand-traced zone per body part: where a tap
   counts, and where the highlight shows. The highlight is cut to the painting's own outline,
   so only the real mane, horn or paw lights up. `tools/plates.html` shows every zone for checking.
-- Suri and the title-screen savanna are drawn in code as SVG (`js/art/`).
-- `sw.js` caches the whole game (about 2.4 MB) for offline play. After changing any file,
+- Suri (`img/suri/`, five moods) and the title panorama (`img/title/`, landscape and portrait)
+  are paintings too. On the title screen the six animal paintings stand on the panorama.
+- Scenes are "alive": the painting breathes gently, light specks drift up, and the
+  animal hops when its sound plays. A loading screen (Suri with binoculars) shows only
+  on a slow first visit.
+- `sw.js` caches the whole game (about 3 MB) for offline play. After changing any file,
   run `node tools/build-sw.js` so phones pick up the new version.
 
 ## Sounds and credits
@@ -69,7 +73,7 @@ The vocabulary, Arabic translations and fun facts live in `js/data.js`.
 No freely licensed recording of a gazelle was found, so the gazelle has no call and is
 left out of the "Qui fait ce bruit ?" quiz.
 
-Animal paintings: made for this game with ChatGPT's image model.
+Paintings (animals, Suri, title panorama): made for this game with ChatGPT's image model.
 
 Fonts: Fredoka, Andika and Noto Naskh Arabic (SIL Open Font License).
 
@@ -80,7 +84,6 @@ node --test tests/*.test.js                     # forgiving answer checker
 npx http-server -p 8080 .                       # serve locally
 BASE=http://127.0.0.1:8080/index.html node tools/playtest.js /tmp/shots 1366x768
                                                 # plays every activity, checks French typography
-node tools/render-art.js /tmp/out suri suri:mood=cheer   # render a vector drawing to PNG
 node tools/build-sw.js                          # refresh the offline file list
 ```
 

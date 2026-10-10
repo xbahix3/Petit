@@ -41,6 +41,32 @@
     b.setAttribute('aria-label', PR.fr(on ? 'Couper le son' : 'Activer le son'));
   }
 
+  // Fetch every painting once, with a loading screen if it takes more than a moment
+  // (slow connections); afterwards the offline cache makes this instant.
+  function preload() {
+    var urls = ['img/title/' + (matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape') + '.webp'];
+    Object.keys(PR.plates).forEach(function (k) { urls.push(PR.plates[k].img); });
+    PR.SURI_MOODS.forEach(function (m) { urls.push('img/suri/' + m + '.webp'); });
+    var loader = document.getElementById('loader'), bar = loader.querySelector('.bar i'), done = 0, shown = false;
+    var showTimer = setTimeout(function () { shown = true; loader.hidden = false; }, 350);
+    function finish() {
+      clearTimeout(showTimer);
+      if (!shown) return;
+      loader.classList.add('done');
+      setTimeout(function () { loader.hidden = true; }, 600);
+    }
+    var safety = setTimeout(finish, 20000);
+    urls.forEach(function (u) {
+      var img = new Image();
+      img.onload = img.onerror = function () {
+        done++;
+        bar.style.width = Math.round((done / urls.length) * 100) + '%';
+        if (done === urls.length) { clearTimeout(safety); setTimeout(finish, shown ? 250 : 0); }
+      };
+      img.src = u;
+    });
+  }
+
   function boot() {
     root = document.getElementById('screen');
     var home = document.getElementById('btn-home');
@@ -58,6 +84,7 @@
     setAr(!!PR.settings.get('arabic', false));
     setSound(PR.audio.isOn());
     PR.suri.mount();
+    preload();
     window.addEventListener('hashchange', render);
     document.addEventListener('pointerdown', PR.audio.unlock, { once: true });
     render();

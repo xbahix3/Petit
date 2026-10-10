@@ -120,7 +120,7 @@ body[data-screen="title"] main#screen { padding: 0; }
 .btn.berry { --c: var(--berry); --d: var(--berry-dark); }
 .btn.plain { --c: #fff; --d: var(--line); color: var(--ink); text-shadow: none; }
 .btn.small { min-height: 46px; padding: 8px 16px; font-size: 18px; border-radius: 15px; }
-.btn.big { min-height: 68px; font-size: 26px; padding: 14px 36px; border-radius: 22px; }
+.btn.big { min-height: 68px; font-size: clamp(20px, 5.4vw, 26px); padding: 14px clamp(18px, 5vw, 36px); border-radius: 22px; white-space: nowrap; }
 .btn[disabled] { opacity: .5; pointer-events: none; }
 .btn svg { width: 24px; height: 24px; flex: none; }
 
@@ -133,10 +133,11 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 .screen-head .ar { font-size: 20px; margin-top: 4px; }
 
 /* ---------- Title screen ---------- */
-.title-screen { position: fixed; inset: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-.title-bg { position: absolute; inset: 0; z-index: -1; }
-.title-bg svg { width: 100%; height: 100%; display: block; }
-.title-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, rgba(255, 248, 230, 0.55), rgba(255, 248, 230, 0) 65%); }
+.title-screen { position: fixed; inset: 0; overflow: hidden; }
+.title-bg, .title-bg img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; }
+.title-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 45% at 50% 30%, rgba(255, 244, 220, 0.45), rgba(255, 244, 220, 0) 70%); }
+.title-content { position: absolute; left: 0; right: 0; top: 7vh; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 16px; z-index: 3; }
+.title-content .btn { margin-top: 18px; }
 .logo { position: relative; animation: logoIn .9s cubic-bezier(.2, .9, .3, 1.3) both; }
 .logo .badge {
   display: inline-block; padding: 14px 34px 18px; border-radius: 28px;
@@ -145,20 +146,40 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
   border: 4px solid #FFF3D6;
 }
 .logo .small { display: block; font-family: var(--font-title); font-weight: 500; font-size: clamp(18px, 3.4vw, 26px); letter-spacing: .04em; color: #FFF3D6; }
-.logo .big { display: block; font-family: var(--font-title); font-weight: 600; font-size: clamp(44px, 10vw, 86px); line-height: .95; text-shadow: 0 4px 0 #1A6B45; }
+.logo .big { display: block; font-family: var(--font-title); font-weight: 600; font-size: clamp(44px, 9vw, 86px); line-height: .95; text-shadow: 0 4px 0 #1A6B45; }
 .logo .leaf { position: absolute; width: 64px; height: 64px; }
 .logo .leaf.l { left: -34px; top: -20px; transform: rotate(-30deg); }
 .logo .leaf.r { right: -34px; bottom: -14px; transform: rotate(150deg); }
 @keyframes logoIn { from { opacity: 0; transform: translateY(-30px) scale(.8); } to { opacity: 1; transform: none; } }
-.tagline { margin: 22px 0 6px; font-family: var(--font-title); font-weight: 500; font-size: clamp(19px, 3.6vw, 26px); color: var(--ink); background: rgba(255, 250, 238, 0.9); padding: 8px 20px; border-radius: 999px; box-shadow: var(--shadow); }
-.medals { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 18px 0 24px; max-width: 640px; }
-.medal { width: clamp(62px, 13vw, 92px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 4px solid #fff; box-shadow: 0 6px 16px rgba(80, 50, 20, 0.25); background: #fff; animation: medalIn .6s cubic-bezier(.2, .9, .3, 1.4) both, bob 3.2s ease-in-out infinite; }
-.medal svg { width: 100%; height: 100%; display: block; }
-@keyframes medalIn { from { opacity: 0; transform: scale(.3) translateY(30px); } }
-@keyframes bob { 50% { transform: translateY(-6px); } }
-.title-suri { position: absolute; right: max(2vw, 8px); bottom: 0; width: clamp(120px, 22vw, 230px); }
-.title-suri svg { width: 100%; display: block; }
-.title-credits { position: absolute; left: 12px; bottom: 10px; font-size: 13px; }
+.tagline { margin: 18px 0 4px; font-family: var(--font-title); font-weight: 500; font-size: clamp(17px, 3.2vw, 25px); color: var(--ink); background: rgba(255, 250, 238, 0.9); padding: 8px 20px; border-radius: 999px; box-shadow: var(--shadow); }
+
+/* the painted herd on the panorama (each painting is 3:2 with margins around the animal) */
+.herd { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.herd-animal { position: absolute; height: auto; filter: drop-shadow(0 10px 8px rgba(60, 35, 10, 0.35)); animation: herdIn .9s cubic-bezier(.2, .9, .3, 1.1) backwards, herdBreathe 4.4s ease-in-out 1s infinite; transform-origin: 50% 95%; }
+@keyframes herdIn { from { opacity: 0; transform: translateY(40px) scale(.9); } }
+@keyframes herdBreathe { 50% { transform: scale(1.012, 1.018); } }
+.h-girafe   { width: 25vw; left: 13vw; bottom: 13vh; }
+.h-gazelle  { width: 18vw; left: 55vw; bottom: 17vh; }
+.h-elephant { width: 30vw; left: -2vw; bottom: 0; }
+.h-loup     { width: 25vw; left: 64vw; bottom: 0; }
+.h-lion     { width: 30vw; left: 30vw; bottom: -1vh; }
+.h-perruche { width: 15vw; right: 6vw; top: 9vh; animation: herdIn .9s backwards, fly 3.4s ease-in-out infinite; }
+@keyframes fly { 50% { transform: translate(-10px, -14px) rotate(-3deg); } }
+.title-suri { position: absolute; z-index: 4; right: max(1vw, 6px); bottom: 0; height: min(36vh, 300px); }
+.title-suri img { height: 100%; width: auto; display: block; filter: drop-shadow(0 8px 10px rgba(60, 35, 10, 0.35)); animation: suriHop 2.8s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes suriHop { 0%, 70%, 100% { transform: none; } 80% { transform: translateY(-14px); } 90% { transform: translateY(0) scale(1.02, .98); } }
+@media (orientation: portrait) {
+  .title-content { top: 5vh; }
+  .h-girafe   { width: 50vw; left: -2vw; bottom: 25vh; }
+  .h-gazelle  { width: 38vw; left: 58vw; bottom: 29vh; }
+  .h-loup     { width: 54vw; left: 44vw; bottom: 13vh; }
+  .h-elephant { width: 60vw; left: -10vw; bottom: 1vh; }
+  .h-lion     { width: 58vw; left: 46vw; bottom: -2vh; }
+  .h-perruche { width: 30vw; right: 4vw; top: 40vh; bottom: auto; }
+  .title-suri { height: 19vh; right: auto; left: 37vw; bottom: 0; top: auto; }
+}
+}
+.title-credits { position: absolute; z-index: 5; left: 12px; bottom: 10px; font-size: 13px; }
 .title-credits a, .linkish { color: var(--ink-soft); background: rgba(255, 250, 238, 0.85); padding: 4px 10px; border-radius: 999px; text-decoration: none; border: 0; cursor: pointer; font: inherit; font-size: 14px; }
 
 /* ---------- Home ---------- */
@@ -331,8 +352,10 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 
 /* ---------- Suri dock ---------- */
 .suri-dock { position: fixed; left: max(8px, env(safe-area-inset-left)); bottom: max(6px, env(safe-area-inset-bottom)); z-index: 40; display: flex; align-items: flex-end; gap: 4px; pointer-events: none; max-width: calc(100vw - 16px); }
-.suri-dock .suri-fig { width: clamp(78px, 16vw, 120px); flex: none; }
-.suri-dock .suri-fig svg { width: 100%; display: block; }
+.suri-dock .suri-fig { width: clamp(66px, 12vw, 104px); flex: none; }
+.suri-img { width: 100%; height: auto; display: block; filter: drop-shadow(0 6px 8px rgba(60, 35, 10, 0.3)); }
+.suri-dock .suri-img { animation: suriIdle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes suriIdle { 50% { transform: scale(1.01, 1.02); } }
 .bubble {
   position: relative; margin-bottom: clamp(50px, 9vw, 80px); pointer-events: none;
   max-width: min(440px, calc(100vw - 120px)); padding: 12px 16px; border-radius: 20px 20px 20px 6px;
@@ -358,7 +381,7 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 @keyframes starIn { from { transform: scale(0) rotate(-90deg); opacity: 0; } }
 .finish p { font-size: 20px; margin: 8px 0 18px; }
 .finish .row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.finish .suri-mini { width: 110px; margin: -70px auto 0; }
+.finish .suri-mini { width: 96px; margin: -96px auto 0; }
 
 /* ---------- Effects ---------- */
 .fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 70; }
@@ -420,13 +443,16 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 .plate .hl { pointer-events: none; }
 .plate .hl.pulse { animation: hlPulse 1.5s ease-in-out infinite; }
 @keyframes hlPulse { 50% { opacity: .55; } }
-.plate .animal { animation: plateIn .7s cubic-bezier(.2, .9, .3, 1.1) backwards; }
-@keyframes plateIn { from { opacity: 0; transform: translateX(-40px); } }
-.plate.act .paint, .plate.act .hl { animation: actHop .55s ease-in-out 2; }
-@keyframes actHop { 50% { transform: translateY(-22px); } }
-.art-elephant.act .paint, .art-loup.act .paint, .art-lion.act .paint { animation: actRoar .3s ease-in-out 5 alternate; }
-@keyframes actRoar { from { transform: rotate(-0.6deg); } to { transform: rotate(0.6deg) translateY(-6px); } }
-.plate .paint, .plate .hl { transform-box: view-box; transform-origin: 50% 90%; }
+.scene-card .paint-live, .scene-card > svg.plate { position: absolute; inset: 0; width: 100%; height: 100%; display: block; transform-origin: 50% 92%;
+  animation: plateIn .7s cubic-bezier(.2, .9, .3, 1.1) backwards, breathe 4.2s ease-in-out .7s infinite; }
+.scene-card .paint-live { pointer-events: none; user-select: none; -webkit-user-drag: none; }
+@keyframes plateIn { from { opacity: 0; transform: translateX(-36px); } }
+@keyframes breathe { 50% { transform: scale(1.004, 1.011); } }
+.scene-card.act .paint-live, .scene-card.act > svg.plate { animation: actHop .5s ease-in-out 2; }
+@keyframes actHop { 50% { transform: translateY(-3%) scale(1.01); } }
+.mote { position: absolute; bottom: -12px; width: 7px; height: 7px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0)); animation: moteUp 10s linear infinite; }
+@keyframes moteUp { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: .9; } 85% { opacity: .7; } 100% { transform: translate(30px, -110%); opacity: 0; } }
 .info .detail { width: 160px; aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 5px solid #fff; box-shadow: 0 0 0 4px var(--sun), var(--shadow); }
 .info .detail svg { width: 100%; height: 100%; display: block; }
 
@@ -463,7 +489,7 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 
 .still *, .still { animation: none !important; }
 @media (prefers-reduced-motion: reduce) {
-  .art *, .medal, .hotspot, .hotspot::after { animation: none !important; }
+  .art *, .hotspot, .hotspot::after, .herd-animal, .title-suri img, .paint-live, .scene-card > svg, .mote { animation: none !important; }
   .screen-enter, .activity, .animal-card, .mem-card { animation: none !important; }
 }
 
@@ -517,3 +543,13 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 600; margin: 0; line-h
 .part-label.below::after { bottom: auto; top: -8px; border-top: 0; border-bottom: 8px solid #fff; }
 .part-label.below.good::after { border-bottom-color: var(--good); }
 .part-label.below.soft::after { border-bottom-color: var(--soft-light); }
+
+/* ---------- loading screen ---------- */
+#loader { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  background: radial-gradient(ellipse at 50% 40%, #FFF6E4, #F2D3A0); transition: opacity .5s ease; }
+#loader.done { opacity: 0; pointer-events: none; }
+#loader img { height: min(40vh, 320px); width: auto; animation: scout 2.4s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes scout { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+#loader .bar { width: min(320px, 70vw); height: 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.7); box-shadow: inset 0 2px 4px rgba(120, 78, 30, 0.2); overflow: hidden; }
+#loader .bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--leaf), #5FD39A); transition: width .3s ease; }
+#loader p { margin: 0; font-family: var(--font-title); font-weight: 500; font-size: 20px; color: var(--ink); }
